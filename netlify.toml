@@ -1,17 +1,12 @@
-# Netlify Configuration pour PHENIX-TECH-SERVICES Frontend
-# Production Frontend hébergé sur Netlify
-
 [build]
   command = "echo 'Frontend statique - pas de build requis'"
   publish = "."
 
-# Redirects pour SPA (Single Page Application)
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-# Protection CORS pour l'API backend
 [[headers]]
   for = "/*"
   [headers.values]
@@ -22,7 +17,6 @@
     X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
 
-# Headers spécifiques pour les fichiers statiques
 [[headers]]
   for = "/css/*"
   [headers.values]
@@ -39,14 +33,11 @@
     Cache-Control = "public, max-age=3600"
     Content-Type = "application/javascript"
 
-# Context production
-[context.production]
-  environment = { NODE_ENV = "production" }
+[context.production.environment]
+  NODE_ENV = "production"
 
-# Context preview
-[context.deploy-preview]
-  environment = { NODE_ENV = "preview" }
+[context.deploy-preview.environment]
+  NODE_ENV = "preview"
 
-# Context branch-deploy
-[context.branch-deploy]
-  environment = { NODE_ENV = "development" }
+[context.branch-deploy.environment]
+  NODE_ENV = "development"
