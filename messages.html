@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Messagerie</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="css/responsive.css">
+<script src="config.js"></script>
+<script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+<script src="api.js"></script>
+<style>
+body{background:#0c0f14;color:white;font-family:Arial;padding:20px}
+#box{min-height:200px;border:1px solid #1f2937;padding:10px}
+input,button{padding:10px;margin-top:10px;width:100%}
+button{background:#3b82f6;border:none;color:white}
+</style>
+</head>
+<body>
+
+<h2>Messagerie</h2>
+<div id="box"></div>
+<input id="msg" placeholder="Message">
+<button onclick="send()">Envoyer</button>
+
+<script>
+let msgs=JSON.parse(localStorage.getItem("msgs"))||[];
+let box=document.getElementById("box");
+msgs.forEach(m=>box.innerHTML+="<p>"+m+"</p>");
+
+function send(){
+  let m=document.getElementById("msg").value;
+  msgs.push(m);
+  localStorage.setItem("msgs",JSON.stringify(msgs));
+  location.reload();
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+{
+  "name": "phenix-frontend-netlify",
+  "version": "1.0.0",
+  "description": "PHENIX-TECH-SERVICES Frontend - Netlify Deployment",
+  "type": "module",
+  "main": "index.html",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Marcel-faya-leno/frontend-phenix.git"
+  },
+  "keywords": [
+    "phenix",
+    "tech-services",
+    "netlify",
+    "frontend",
+    "e-commerce"
+  ],
+  "author": "PHENIX-TECH-SERVICES",
+  "license": "MIT",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "serve": "node server.js"
+  },
+  "devDependencies": {},
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "> 0.5%",
+    "last 2 versions",
+    "Firefox ESR",
+    "not dead"
+  ],
+  "config": {
+    "api": "https://backend-phenix.onrender.com/api",
+    "frontend": "https://front-phenix.netlify.app"
+  },
+  "netlify": {
+    "redirects": [
+      {
+        "from": "/*",
+        "to": "/index.html",
+        "status": 200
+      }
+    ],
+    "headers": [
+      {
+        "for": "/*",
+        "values": {
+          "Access-Control-Allow-Origin": "https://backend-phenix.onrender.com",
+          "X-Frame-Options": "SAMEORIGIN"
+        }
+      }
+    ]
+  }
+}

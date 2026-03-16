@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API PHENIX-TECH-SERVICES</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2A5CAA 0%, #1e40af 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            background: #f9fafb;
+        }
+
+        .section h2 {
+            color: #2A5CAA;
+            margin-bottom: 15px;
+            font-size: 20px;
+            border-bottom: 2px solid #2A5CAA;
+            padding-bottom: 10px;
+        }
+
+        .test-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .test-btn {
+            padding: 12px 20px;
+            background: #2A5CAA;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .test-btn:hover {
+            background: #1e40af;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(42, 92, 170, 0.3);
+        }
+
+        .test-btn:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .success {
+            color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .error {
+            color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .info {
+            color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .config-info {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .config-info h3 {
+            color: #92400e;
+            margin-bottom: 10px;
+        }
+
+        .config-info p {
+            color: #78350f;
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-card h4 {
+            color: #2A5CAA;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .stat-status {
+            font-size: 12px;
+            margin-top: 5px;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        .stat-status.ok {
+            color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .stat-status.error {
+            color: #ef4444;
+            background: #fef2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Test API PHENIX-TECH-SERVICES</h1>
+            <div class="status">
+                <span id="environment"></span> | 
+                <span id="backend-status">En vérification...</span>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Configuration -->
+            <div class="config-info">
+                <h3>📋 Configuration Détectée</h3>
+                <p><strong>Environnement:</strong> <span id="env-type"></span></p>
+                <p><strong>Frontend URL:</strong> <span id="frontend-url"></span></p>
+                <p><strong>API Base:</strong> <span id="api-base"></span></p>
+                <p><strong>Backend URL:</strong> <span id="backend-url"></span></p>
+            </div>
+
+            <!-- Requêtes Générales -->
+            <div class="section">
+                <h2>📡 Requêtes Générales</h2>
+                <div class="test-group">
+                    <button class="test-btn" onclick="testBackendStatus()">Vérifier Backend</button>
+                    <button class="test-btn" onclick="testCORS()">Tester CORS</button>
+                    <button class="test-btn" onclick="testNetworkLatency()">Latence Réseau</button>
+                </div>
+                <div class="results" id="general-results"></div>
+            </div>
+
+            <!-- Tests Produits -->
+            <div class="section">
+                <h2>📦 Produits</h2>
+                <div class="test-group">
+                    <button class="test-btn" onclick="testGetProducts()">Récupérer Produits</button>
+                    <button class="test-btn" onclick="testGetCategories()">Catégories</button>
+                    <button class="test-btn" onclick="testGetStats()">Statistiques</button>
+                </div>
+                <div class="results" id="products-results"></div>
+            </div>
+
+            <!-- Tests Authentification -->
+            <div class="section">
+                <h2>🔐 Authentification</h2>
+                <div class="test-group">
+                    <button class="test-btn" onclick="testSignupUser()">Créer Compte User</button>
+                    <button class="test-btn" onclick="testLoginUser()">Login User</button>
+                    <button class="test-btn" onclick="testVerifyUser()">Vérifier Session</button>
+                </div>
+                <div class="results" id="auth-results"></div>
+            </div>
+
+            <!-- Tests Panier -->
+            <div class="section">
+                <h2>🛒 Panier</h2>
+                <div class="test-group">
+                    <button class="test-btn" onclick="testGetCart()">Récupérer Panier</button>
+                    <button class="test-btn" onclick="testAddToCart()">Ajouter Article</button>
+                    <button class="test-btn" onclick="testClearCart()">Vider Panier</button>
+                </div>
+                <div class="results" id="cart-results"></div>
+            </div>
+
+            <!-- Tests Commandes -->
+            <div class="section">
+                <h2>📋 Commandes</h2>
+                <div class="test-group">
+                    <button class="test-btn" onclick="testGetOrders()">Récupérer Commandes</button>
+                </div>
+                <div class="results" id="orders-results"></div>
+            </div>
+
+            <!-- Statistiques -->
+            <div class="grid-stats">
+                <div class="stat-card">
+                    <h4>Backend Status</h4>
+                    <div class="stat-value" id="stat-backend" style="font-size: 16px;">...</div>
+                    <div class="stat-status" id="stat-backend-status">En vérification</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Produits</h4>
+                    <div class="stat-value" id="stat-products">0</div>
+                    <div class="stat-status ok">Récupérés</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Utilisateur</h4>
+                    <div class="stat-value" id="stat-user">Non</div>
+                    <div class="stat-status ok">Connecté</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Latence</h4>
+                    <div class="stat-value" id="stat-latency">0ms</div>
+                    <div class="stat-status" id="stat-latency-status">Normal</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="api.js"></script>
+    <script>
+        // Initialiser l'affichage config
+        function initConfig() {
+            const isLocal = CONFIG?.IS_LOCAL;
+            document.getElementById('environment').textContent = isLocal ? '🏠 LOCAL' : '☁️ PRODUCTION';
+            document.getElementById('env-type').textContent = isLocal ? 'Local (localhost)' : 'Production (Netlify)';
+            document.getElementById('frontend-url').textContent = CONFIG?.FRONTEND_URL || window.location.origin;
+            document.getElementById('api-base').textContent = CONFIG?.API_BASE_URL || 'Non configuré';
+            document.getElementById('backend-url').textContent = CONFIG?.BACKEND_URL || 'Non configuré';
+        }
+
+        // Fonction pour logger les résultats
+        function logResult(sectionId, message, type = 'info') {
+            const section = document.getElementById(sectionId);
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ';
+            const fullMessage = `[${timestamp}] ${prefix} ${message}\n`;
+            
+            section.className = 'results ' + type;
+            section.textContent = fullMessage + (section.textContent || '');
+        }
+
+        // Vérifier status backend
+        async function testBackendStatus() {
+            try {
+                logResult('general-results', 'Vérification du backend...');
+                const response = await fetch(`${CONFIG.BACKEND_URL}/api/products`, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                if (response.ok) {
+                    logResult('general-results', `✓ Backend en ligne (${response.status})`, 'success');
+                    document.getElementById('stat-backend').textContent = '🟢 En ligne';
+                    document.getElementById('stat-backend-status').textContent = 'Opérationnel';
+                    document.getElementById('stat-backend-status').className = 'stat-status ok';
+                } else {
+                    logResult('general-results', `✗ Backend erreur HTTP ${response.status}`, 'error');
+                    document.getElementById('stat-backend').textContent = '🔴 Erreur';
+                }
+            } catch (error) {
+                logResult('general-results', `✗ Erreur: ${error.message}`, 'error');
+                document.getElementById('stat-backend').textContent = '🔴 Hors ligne';
+                document.getElementById('stat-backend-status').textContent = 'Non accessible';
+                document.getElementById('stat-backend-status').className = 'stat-status error';
+            }
+        }
+
+        // Tester CORS
+        async function testCORS() {
+            try {
+                logResult('general-results', 'Test CORS...');
+                const response = await fetch(`${CONFIG.BACKEND_URL}/api/products`, {
+                    method: 'OPTIONS',
+                    mode: 'cors',
+                    headers: {
+                        'Access-Control-Request-Method': 'GET'
+                    }
+                });
+
+                const corsHeaders = {
+                    origin: response.headers.get('Access-Control-Allow-Origin'),
+                    methods: response.headers.get('Access-Control-Allow-Methods'),
+                    headers: response.headers.get('Access-Control-Allow-Headers')
+                };
+
+                logResult('general-results', `✓ CORS Configuré:\n${JSON.stringify(corsHeaders, null, 2)}`, 'success');
+            } catch (error) {
+                logResult('general-results', `✗ CORS Erreur: ${error.message}`, 'error');
+            }
+        }
+
+        // Tester latence
+        async function testNetworkLatency() {
+            try {
+                logResult('general-results', 'Mesure de latence...');
+                const start = performance.now();
+                
+                await fetch(`${CONFIG.BACKEND_URL}/api/products?limit=1`, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                const latency = Math.round(performance.now() - start);
+                logResult('general-results', `✓ Latence: ${latency}ms`, 'success');
+                document.getElementById('stat-latency').textContent = latency + 'ms';
+                document.getElementById('stat-latency-status').textContent = latency < 500 ? 'Bon' : latency < 1000 ? 'Acceptable' : 'Lent';
+            } catch (error) {
+                logResult('general-results', `✗ Erreur latence: ${error.message}`, 'error');
+            }
+        }
+
+        // Tests Produits
+        async function testGetProducts() {
+            try {
+                logResult('products-results', 'Récupération des produits...');
+                const products = await PhenixAPI.getProducts();
+                const count = Array.isArray(products) ? products.length : (products?.data?.length || 0);
+                logResult('products-results', `✓ ${count} produits récupérés\n${JSON.stringify(products?.slice?.(0, 2) || [], null, 2)}`, 'success');
+                document.getElementById('stat-products').textContent = count;
+            } catch (error) {
+                logResult('products-results', `✗ Erreur: ${error.message}`, 'error');
+            }
+        }
+
+        async function testGetCategories() {
+            try {
+                logResult('products-results', 'Récupération des catégories...');
+                const categories = await PhenixAPI.getCategories();
+                logResult('products-results', `✓ Catégories:\n${JSON.stringify(categories, null, 2)}`, 'success');
+            } catch (error) {
+                logResult('products-results', `✗ Erreur: ${error.message}`, 'error');
+            }
+        }
+
+        async function testGetStats() {
+            try {
+                logResult('products-results', 'Récupération des statistiques...');
+                const stats = await PhenixAPI.getStats();
+                logResult('products-results', `✓ Stats:\n${JSON.stringify(stats, null, 2)}`, 'success');
+            } catch (error) {
+                logResult('products-results', `✗ Erreur: ${error.message}`, 'error');
+            }
+        }
+
+        // Tests Auth
+        async function testLoginUser() {
+            try {
+                logResult('auth-results', 'Test login user...');
+                const result = await PhenixAPI.loginUser('test@example.com', 'password123');
+                localStorage.setItem(CONFIG.STORAGE.USER_TOKEN, result.data?.token || '');
+                logResult('auth-results', `✓ Login réussi\nToken: ${result.data?.token?.substring(0, 20)}...`, 'success');
+                document.getElementById('stat-user').textContent = 'Oui';
+            } catch (error) {
+                logResult('auth-results', `✗ Erreur login: ${error.message}`, 'error');
+            }
+        }
+
+        async function testSignupUser() {
+            try {
+                logResult('auth-results', 'Création compte...');
+                const result = await PhenixAPI.signupUser({
+                    email: `user-${Date.now()}@example.com`,
+                    password: 'password123',
+                    name: 'Test User'
+                });
+                logResult('auth-results', `✓ Compte créé\n${JSON.stringify(result, null, 2)}`, 'success');
+            } catch (error) {
+                logResult('auth-results', `✗ Erreur: ${error.message}`, 'error');
+            }
+        }
+
+        async function testVerifyUser() {
+            try {
+                logResult('auth-results', 'Vérification session...');
+                const result = await PhenixAPI.verifyUser();
+                logResult('auth-results', `✓ Vérification:\n${JSON.stringify(result, null, 2)}`, 'success');
+            } catch (error) {
+                logResult('auth-results', `✗ Erreur: ${error.message}`, 'error');
+            }
+        }
+
+        // Tests Panier
+        async function testGetCart() {
+            try {
+                logResult('cart-results', 'Récupération du panier...');
+                const cart = await PhenixAPI.getCart();
+                logResult('cart-results', `✓ Panier:\n${JSON.stringify(cart, null, 2)}`, 'success');
+            } catch (error) {
+                logResult('cart-results', `✗ Erreur: ${error.message}`, 'error');
+            }
+        }
+
+        async function testAddToCart() {
+            try {
+                logResult('cart-results', 'Ajout au panier...');
+                const result = await PhenixAPI.addToCart('product-1', 1);
+                logResult('cart-results', `✓ Ajout réussi\n${JSON.stringify(result, null, 2)}`, 'success');
+            } catch (error) {
+                logResult('cart-results', `✗ Erreur: ${error.message}`, 'error');
+            }
+        }
+
+        async function testClearCart() {
+            try {
+                logResult('cart-results', 'Vidage du panier...');
+                const result = await PhenixAPI.clearCart();
+                logResult('cart-results', `✓ Panier vidé\n${JSON.stringify(result, null, 2)}`, 'success');
+            } catch (error) {
+                logResult('cart-results', `✗ Erreur: ${error.message}`, 'error');
+            }
+        }
+
+        // Tests Commandes
+        async function testGetOrders() {
+            try {
+                logResult('orders-results', 'Récupération des commandes...');
+                const orders = await PhenixAPI.getOrders();
+                logResult('orders-results', `✓ Commandes:\n${JSON.stringify(orders, null, 2)}`, 'success');
+            } catch (error) {
+                logResult('orders-results', `✗ Erreur: ${error.message}`, 'error');
+            }
+        }
+
+        // Initialiser
+        window.addEventListener('load', () => {
+            initConfig();
+            testBackendStatus();
+        });
+    </script>
+</body>
+</html>

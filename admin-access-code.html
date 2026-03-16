@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accès Administrateur - PHENIX</title>
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #CBD5E1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background pattern */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(42, 92, 170, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 107, 53, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 50px 40px 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header */
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .logo-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid #2A5CAA;
+            box-shadow: 0 0 15px rgba(42, 92, 170, 0.3);
+        }
+
+        .logo-text h1 {
+            font-size: 28px;
+            color: #F1F5F9;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .logo-text p {
+            font-size: 12px;
+            color: #64748B;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #F1F5F9;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .header-subtitle {
+            font-size: 13px;
+            color: #94A3B8;
+        }
+
+        /* Code input */
+        .code-input-wrapper {
+            margin-bottom: 30px;
+        }
+
+        .code-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #CBD5E1;
+            margin-bottom: 12px;
+        }
+
+        .code-inputs {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .code-input {
+            width: 60px;
+            height: 60px;
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.5) 100%);
+            color: #F1F5F9;
+            transition: all 0.3s ease;
+            color-scheme: dark;
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: #2A5CAA;
+            background: rgba(42, 92, 170, 0.1);
+            box-shadow: 0 0 12px rgba(42, 92, 170, 0.3);
+        }
+
+        .code-input::-webkit-outer-spin-button,
+        .code-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .code-input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* Messages */
+        .message {
+            padding: 14px 16px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            display: none;
+            font-size: 13px;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.show {
+            display: flex;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            color: #FCA5A5;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            color: #86EFAC;
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .info-message {
+            background: rgba(59, 130, 246, 0.1);
+            color: #93C5FD;
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        /* Button */
+        .login-btn {
+            width: 100%;
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #2A5CAA 0%, #1E447F 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 20px rgba(42, 92, 170, 0.3);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .login-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(42, 92, 170, 0.4);
+        }
+
+        .login-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .login-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .login-btn:hover::after {
+            left: 100%;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .spinner.active {
+            display: block;
+        }
+
+        /* Clear button */
+        .clear-btn {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: #2A5CAA;
+            border: 1px solid rgba(42, 92, 170, 0.3);
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .clear-btn:hover {
+            background: rgba(42, 92, 170, 0.1);
+            border-color: #2A5CAA;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 12px;
+            color: #64748B;
+        }
+
+        .footer i {
+            margin-right: 6px;
+        }
+
+        .qr-code-hint {
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            text-align: center;
+            color: #93C5FD;
+        }
+
+        .demo-notice {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #FCD34D;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 40px 24px 30px;
+            }
+
+            .code-input {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+            }
+
+            .code-inputs {
+                gap: 8px;
+            }
+
+            .header-title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Header -->
+            <div class="login-header">
+                <div class="logo-section">
+                    <img src="images/logo.jpg" alt="PHENIX" class="logo-img" onerror="this.src='https://via.placeholder.com/60?text=PHENIX'">
+                    <div class="logo-text">
+                        <h1>PHENIX</h1>
+                        <p>Admin Access</p>
+                    </div>
+                </div>
+                <div class="header-title">
+                    <i class="fas fa-lock"></i>
+                    Espace Admin
+                </div>
+                <p class="header-subtitle">Entrez votre code d'accès 4 chiffres</p>
+            </div>
+
+            <!-- Messages -->
+            <div class="message error-message" id="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="error-text"></span>
+            </div>
+
+            <div class="message success-message" id="success-message">
+                <i class="fas fa-check-circle"></i>
+                <span id="success-text">Code correct ! Redirection...</span>
+            </div>
+
+            <div class="message info-message" id="info-message">
+                <i class="fas fa-info-circle"></i>
+                <span id="info-text"></span>
+            </div>
+
+            <!-- Code input -->
+            <div class="code-input-wrapper">
+                <label class="code-label">
+                    <i class="fas fa-keyboard"></i>
+                    Code d'accès
+                </label>
+                <div class="code-inputs">
+                    <input type="number" class="code-input" id="digit1" inputmode="numeric" min="0" max="9" maxlength="1">
+                    <input type="number" class="code-input" id="digit2" inputmode="numeric" min="0" max="9" maxlength="1">
+                    <input type="number" class="code-input" id="digit3" inputmode="numeric" min="0" max="9" maxlength="1">
+                    <input type="number" class="code-input" id="digit4" inputmode="numeric" min="0" max="9" maxlength="1">
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <button class="login-btn" id="submit-btn" onclick="handleSubmit()">
+                <span class="spinner" id="spinner"></span>
+                <span id="btn-text">Valider</span>
+            </button>
+
+            <button class="clear-btn" onclick="clearCode()">
+                <i class="fas fa-eraser"></i> Effacer
+            </button>
+
+            <!-- Demo notice -->
+            <div class="demo-notice" id="demo-notice" style="display: none;">
+                <i class="fas fa-flask"></i> Mode démo - Code: 0000
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <i class="fas fa-shield-alt"></i>
+                Accès sécurisé - Toutes les données sont chiffrées
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CONFIG = {
+            API_BASE_URL: 'http://localhost:5000/api'
+        };
+
+        // Vérifier si déjà connecté
+        window.addEventListener('load', () => {
+            const token = localStorage.getItem('admin_token');
+            if (token && token.startsWith('ADMIN-')) {
+                window.location.href = 'admin.html';
+            }
+
+            // Afficher la notice démo si en mode démo
+            checkDemoMode();
+        });
+
+        /**
+         * Vérifier si le mode démo est actif
+         */
+        async function checkDemoMode() {
+            try {
+                const response = await fetch(`${CONFIG.API_BASE_URL}/admin/status`);
+                const data = await response.json();
+                if (data.mode === 'demo') {
+                    document.getElementById('demo-notice').style.display = 'block';
+                }
+            } catch (error) {
+                console.warn('Mode démo non détecté');
+            }
+        }
+
+        /**
+         * Auto-focus sur les champs de saisie
+         */
+        document.querySelectorAll('.code-input').forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length === 1) {
+                    // Aller au champ suivant
+                    if (index < 3) {
+                        document.querySelectorAll('.code-input')[index + 1].focus();
+                    } else {
+                        // Auto-soumettre si dernier champ
+                        setTimeout(() => handleSubmit(), 300);
+                    }
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                // Retour arrière pour aller au champ précédent
+                if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+                    e.preventDefault();
+                    document.querySelectorAll('.code-input')[index - 1].focus();
+                }
+                // Entrée pour soumettre
+                if (e.key === 'Enter') {
+                    handleSubmit();
+                }
+            });
+
+            // Accepter seulement les chiffres
+            input.addEventListener('keypress', (e) => {
+                if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        /**
+         * Récupérer le code entré
+         */
+        function getCode() {
+            const digits = Array.from(document.querySelectorAll('.code-input')).map(input => input.value);
+            return digits.join('');
+        }
+
+        /**
+         * Valider le code
+         */
+        async function handleSubmit() {
+            const code = getCode();
+            const submitBtn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
+            const spinner = document.getElementById('spinner');
+
+            // Vérifier que le code est complet
+            if (code.length !== 4) {
+                showMessage('error-message', '⚠️ Veuillez entrer un code à 4 chiffres');
+                return;
+            }
+
+            // Désactiver le bouton
+            submitBtn.disabled = true;
+            spinner.classList.add('active');
+            btnText.textContent = 'Vérification...';
+
+            // Masquer les messages
+            hideMessage('error-message');
+            hideMessage('success-message');
+
+            try {
+                const response = await fetch(`${CONFIG.API_BASE_URL}/admin/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ code })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Sauvegarder le token
+                    localStorage.setItem('admin_token', data.token);
+                    localStorage.setItem('admin_permissions', JSON.stringify(data.admin.permissions));
+                    
+                    // Afficher le succès
+                    showMessage('success-message', '✅ Connexion réussie ! Redirection...');
+
+                    // Rediriger
+                    setTimeout(() => {
+                        window.location.href = 'admin.html';
+                    }, 1500);
+                } else {
+                    // Erreur d'authentification
+                    showMessage('error-message', data.message || '❌ Code d\'accès incorrect');
+                    clearCode();
+                }
+            } catch (error) {
+                console.error('❌ Erreur:', error);
+                showMessage('error-message', '❌ Erreur de connexion. Vérifiez votre connexion.');
+            } finally {
+                submitBtn.disabled = false;
+                spinner.classList.remove('active');
+                btnText.textContent = 'Valider';
+            }
+        }
+
+        /**
+         * Effacer le code
+         */
+        function clearCode() {
+            document.querySelectorAll('.code-input').forEach(input => {
+                input.value = '';
+            });
+            document.getElementById('digit1').focus();
+            hideMessage('error-message');
+            hideMessage('success-message');
+        }
+
+        /**
+         * Afficher un message
+         */
+        function showMessage(elementId, text) {
+            const element = document.getElementById(elementId);
+            const textElement = element.querySelector('span');
+            textElement.innerHTML = text;
+            element.classList.add('show');
+        }
+
+        /**
+         * Masquer un message
+         */
+        function hideMessage(elementId) {
+            const element = document.getElementById(elementId);
+            element.classList.remove('show');
+        }
+
+        // Focus initial
+        document.getElementById('digit1').focus();
+    </script>
+</body>
+</html>

@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Test API Complet - PHENIX (Netlify + Render)</title>
+    <script src="config.js"></script>
+    <script src="api.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #f0f4f8;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+            opacity: 0.8;
+            font-size: 0.9em;
+        }
+
+        .config-info {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            font-size: 0.9em;
+        }
+
+        .config-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .label {
+            font-weight: 600;
+            opacity: 0.7;
+        }
+
+        .value {
+            font-family: 'Courier New', monospace;
+            opacity: 0.9;
+            word-break: break-all;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .test-group {
+            margin-bottom: 30px;
+        }
+
+        .group-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .group-icon {
+            font-size: 1.5em;
+        }
+
+        .test-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .test-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .test-title {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .test-desc {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .test-endpoint {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .status {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status.pending {
+            background: #f59e0b;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .status.success {
+            background: #10b981;
+        }
+
+        .status.error {
+            background: #ef4444;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .result {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            max-height: 250px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            border-left: 3px solid #2a5caa;
+            display: none;
+        }
+
+        .result.success {
+            border-left-color: #10b981;
+        }
+
+        .result.error {
+            border-left-color: #ef4444;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        button {
+            background: linear-gradient(135deg, #2a5caa 0%, #1e447f 100%);
+            color: #f0f4f8;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(42, 92, 170, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .auth-input {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #f0f4f8;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .auth-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .summary {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .summary.show {
+            display: block;
+        }
+
+        .summary-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #10b981;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 0.9em;
+        }
+
+        .summary-passed {
+            color: #10b981;
+        }
+
+        .summary-failed {
+            color: #ef4444;
+        }
+
+        @media (max-width: 768px) {
+            .config-info {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test API Complet - PHENIX TECH-SERVICES</h1>
+        <p class="subtitle">Netlify Frontend + Render Backend + MongoDB Atlas</p>
+
+        <!-- Configuration -->
+        <div class="config-info">
+            <div class="config-item">
+                <span class="label">🌐 API Base URL</span>
+                <span class="value" id="apiBaseUrl">Chargement...</span>
+            </div>
+            <div class="config-item">
+                <span class="label">🏠 Frontend URL</span>
+                <span class="value" id="frontendUrl">Chargement...</span>
+            </div>
+            <div class="config-item">
+                <span class="label">⚙️ Environment</span>
+                <span class="value" id="environment">Chargement...</span>
+            </div>
+        </div>
+
+        <!-- 🟢 AUTHENTIFICATION -->
+        <div class="test-group">
+            <div class="group-title">
+                <span class="group-icon">🔐</span>
+                Authentification
+            </div>
+
+            <!-- Test Auth: Login User -->
+            <div class="test-card">
+                <div class="test-title">
+                    <span class="status pending" id="statusAuthLogin"></span>
+                    Login Utilisateur
+                </div>
+                <div class="test-desc">Tester l'authentification utilisateur</div>
+                <div class="test-endpoint">POST /api/auth/login</div>
+                <input type="email" id="loginEmail" class="auth-input" placeholder="Email (test@test.com)" value="test@test.com" />
+                <input type="password" id="loginPassword" class="auth-input" placeholder="Mot de passe" value="test123" />
+                <button onclick="testAuthLogin()">Tester Login</button>
+                <div class="result" id="resultAuthLogin"></div>
+            </div>
+
+            <!-- Test Auth: Verify -->
+            <div class="test-card">
+                <div class="test-title">
+                    <span class="status pending" id="statusAuthVerify"></span>
+                    Vérifier Token
+                </div>
+                <div class="test-desc">Vérifier si le token JWT est valide</div>
+                <div class="test-endpoint">GET /api/auth/verify</div>
+                <button onclick="testAuthVerify()">Tester</button>
+                <div class="result" id="resultAuthVerify"></div>
+            </div>
+
+            <!-- Test Auth: Admin Login -->
+            <div class="test-card">
+                <div class="test-title">
+                    <span class="status pending" id="statusAdminLogin"></span>
+                    Login Admin
+                </div>
+                <div class="test-desc">Tester l'authentification administrateur</div>
+                <div class="test-endpoint">POST /api/admin/login</div>
+                <input type="email" id="adminEmail" class="auth-input" placeholder="Email admin" value="admin@phenix.com" />
+                <input type="password" id="adminPassword" class="auth-input" placeholder="Mot de passe admin" value="admin123" />
+                <button onclick="testAdminLogin()">Tester Login Admin</button>
+                <div class="result" id="resultAdminLogin"></div>
+            </div>
+        </div>
+
+        <!-- 🟢 PRODUITS -->
+        <div class="test-group">
+            <div class="group-title">
+                <span class="group-icon">📦</span>
+                Produits
+            </div>
+
+            <!-- Test: Get Products -->
+            <div class="test-card">
+                <div class="test-title">
+                    <span class="status pending" id="statusGetProducts"></span>
+                    Lister les Produits
+                </div>
+                <div class="test-desc">Récupérer tous les produits avec pagination</div>
+                <div class="test-endpoint">GET /api/products</div>
+                <button onclick="testGetProducts()">Tester</button>
+                <div class="result" id="resultGetProducts"></div>
+            </div>
+
+            <!-- Test: Search Products -->
+            <div class="test-card">
+                <div class="test-title">
+                    <span class="status pending" id="statusSearchProducts"></span>
+                    Rechercher des Produits
+                </div>
+                <div class="test-desc">Rechercher un produit par mot-clé</div>
+                <div class="test-endpoint">GET /api/products/search</div>
+                <input type="text" id="searchQuery" class="auth-input" placeholder="Terme de recherche (ex: laptop, phone)" value="laptop" />
+                <button onclick="testSearchProducts()">Tester</button>
+                <div class="result" id="resultSearchProducts"></div>
+            </div>
+        </div>
+
+        <!-- 🟢 PANIER -->
+        <div class="test-group">
+            <div class="group-title">
+                <span class="group-icon">🛒</span>
+                Panier
+            </div>
+
+            <!-- Test: Get Cart -->
+            <div class="test-card">
+                <div class="test-title">
+                    <span class="status pending" id="statusGetCart"></span>
+                    Récupérer le Panier
+                </div>
+                <div class="test-desc">Vérifier que le panier se charge sans erreur</div>
+                <div class="test-endpoint">GET /api/cart</div>
+                <button onclick="testGetCart()">Tester</button>
+                <div class="result" id="resultGetCart"></div>
+            </div>
+
+            <!-- Test: Add to Cart -->
+            <div class="test-card">
+                <div class="test-title">
+                    <span class="status pending" id="statusAddCart"></span>
+                    Ajouter un Produit au Panier
+                </div>
+                <div class="test-desc">Ajouter un produit avec quantité</div>
+                <div class="test-endpoint">POST /api/cart/add</div>
+                <input type="text" id="productId" class="auth-input" placeholder="ID Produit" value="507f1f77bcf86cd799439011" />
+                <input type="number" id="cartQuantity" class="auth-input" placeholder="Quantité" value="1" min="1" />
+                <button onclick="testAddToCart()">Tester</button>
+                <div class="result" id="resultAddCart"></div>
+            </div>
+        </div>
+
+        <!-- 🟢 COMMANDES -->
+        <div class="test-group">
+            <div class="group-title">
+                <span class="group-icon">📋</span>
+                Commandes
+            </div>
+
+            <!-- Test: Get Orders -->
+            <div class="test-card">
+                <div class="test-title">
+                    <span class="status pending" id="statusGetOrders"></span>
+                    Lister les Commandes
+                </div>
+                <div class="test-desc">Récupérer toutes les commandes de l'utilisateur</div>
+                <div class="test-endpoint">GET /api/orders</div>
+                <button onclick="testGetOrders()">Tester</button>
+                <div class="result" id="resultGetOrders"></div>
+            </div>
+
+            <!-- Test: Create Order -->
+            <div class="test-card">
+                <div class="test-title">
+                    <span class="status pending" id="statusCreateOrder"></span>
+                    Créer une Commande
+                </div>
+                <div class="test-desc">Créer une nouvelle commande depuis le panier</div>
+                <div class="test-endpoint">POST /api/orders</div>
+                <input type="text" id="orderDelivery" class="auth-input" placeholder="Adresse" value="123 Rue Test, Paris" />
+                <button onclick="testCreateOrder()">Tester</button>
+                <div class="result" id="resultCreateOrder"></div>
+            </div>
+        </div>
+
+        <!-- 🟢 PAIEMENTS -->
+        <div class="test-group">
+            <div class="group-title">
+                <span class="group-icon">💳</span>
+                Paiements
+            </div>
+
+            <!-- Test: Create Payment -->
+            <div class="test-card">
+                <div class="test-title">
+                    <span class="status pending" id="statusCreatePayment"></span>
+                    Créer un Paiement
+                </div>
+                <div class="test-desc">Initialiser une transaction de paiement</div>
+                <div class="test-endpoint">POST /api/payments/create</div>
+                <input type="text" id="paymentOrderId" class="auth-input" placeholder="ID Commande" value="507f1f77bcf86cd799439012" />
+                <input type="number" id="paymentAmount" class="auth-input" placeholder="Montant (CFA)" value="10000" />
+                <button onclick="testCreatePayment()">Tester</button>
+                <div class="result" id="resultCreatePayment"></div>
+            </div>
+
+            <!-- Test: Verify Payment -->
+            <div class="test-card">
+                <div class="test-title">
+                    <span class="status pending" id="statusVerifyPayment"></span>
+                    Vérifier un Paiement
+                </div>
+                <div class="test-desc">Vérifier le statut d'un paiement</div>
+                <div class="test-endpoint">POST /api/payments/verify</div>
+                <input type="text" id="transactionId" class="auth-input" placeholder="Transaction ID" value="test_123456" />
+                <button onclick="testVerifyPayment()">Tester</button>
+                <div class="result" id="resultVerifyPayment"></div>
+            </div>
+        </div>
+
+        <!-- 🟢 INFRASTRUCTURE -->
+        <div class="test-group">
+            <div class="group-title">
+                <span class="group-icon">⚙️</span>
+                Infra & Santé
+            </div>
+
+            <!-- Test: Health Check -->
+            <div class="test-card">
+                <div class="test-title">
+                    <span class="status pending" id="statusHealth"></span>
+                    Santé du Backend
+                </div>
+                <div class="test-desc">Vérifier que le serveur répond</div>
+                <div class="test-endpoint">GET /api/health</div>
+                <button onclick="testHealth()">Tester</button>
+                <div class="result" id="resultHealth"></div>
+            </div>
+
+            <!-- Test: CORS Headers -->
+            <div class="test-card">
+                <div class="test-title">
+                    <span class="status pending" id="statusCORS"></span>
+                    Vérifier CORS
+                </div>
+                <div class="test-desc">Vérifier les en-têtes CORS depuis Netlify</div>
+                <div class="test-endpoint">OPTIONS /api/products</div>
+                <button onclick="testCORSHeaders()">Tester</button>
+                <div class="result" id="resultCORS"></div>
+            </div>
+
+            <!-- Test: MongoDB Connection -->
+            <div class="test-card">
+                <div class="test-title">
+                    <span class="status pending" id="statusMongoDB"></span>
+                    Connexion MongoDB
+                </div>
+                <div class="test-desc">Vérifier que MongoDB Atlas est accessible</div>
+                <div class="test-endpoint">GET /api/health (extended)</div>
+                <button onclick="testMongoDB()">Tester</button>
+                <div class="result" id="resultMongoDB"></div>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary" id="summary">
+            <div class="summary-title">📊 Résumé des Tests</div>
+            <div class="summary-item">
+                <span>Tests Réussis:</span>
+                <span class="summary-passed" id="passedCount">0</span>
+            </div>
+            <div class="summary-item">
+                <span>Tests Échoués:</span>
+                <span class="summary-failed" id="failedCount">0</span>
+            </div>
+            <div class="summary-item">
+                <span>Total:</span>
+                <span id="totalCount">0</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let testResults = {
+            passed: 0,
+            failed: 0
+        };
+
+        // Initialize display
+        document.getElementById('apiBaseUrl').textContent = CONFIG?.API_BASE_URL || 'Non configuré';
+        document.getElementById('frontendUrl').textContent = CONFIG?.FRONTEND_URL || 'Auto';
+        document.getElementById('environment').textContent = window.location.hostname.includes('netlify') ? '🌍 Production (Netlify)' : '💻 Local';
+
+        function updateStatus(testId, status, message, data = null) {
+            const statusEl = document.getElementById(`status${testId}`);
+            const resultEl = document.getElementById(`result${testId}`);
+
+            statusEl.classList.remove('pending', 'success', 'error');
+            statusEl.classList.add(status);
+
+            resultEl.classList.add('show');
+            resultEl.classList.remove('success', 'error');
+            resultEl.classList.add(status === 'error' ? 'error' : 'success');
+
+            let output = `[${new Date().toLocaleTimeString()}]\n\n`;
+            output += `✓ Status: ${status.toUpperCase()}\n`;
+            output += `✓ Message: ${message}\n`;
+
+            if (data) {
+                output += `\n📦 Data:\n`;
+                try {
+                    output += JSON.stringify(data, null, 2);
+                } catch (e) {
+                    output += String(data);
+                }
+            }
+
+            resultEl.textContent = output;
+
+            // Update summary
+            if (status === 'success') {
+                testResults.passed++;
+            } else {
+                testResults.failed++;
+            }
+
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const summary = document.getElementById('summary');
+            summary.classList.add('show');
+            document.getElementById('passedCount').textContent = testResults.passed;
+            document.getElementById('failedCount').textContent = testResults.failed;
+            document.getElementById('totalCount').textContent = testResults.passed + testResults.failed;
+        }
+
+        // 🔐 AUTHENTICATION TESTS
+        async function testAuthLogin() {
+            updateStatus('AuthLogin', 'pending', 'Authentification en cours...');
+            try {
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                if (!email || !password) {
+                    throw new Error('Email et mot de passe requis');
+                }
+
+                const response = await fetch(`${CONFIG.API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message || 'Login échoué');
+
+                localStorage.setItem(CONFIG.STORAGE.USER_TOKEN, data.token);
+                updateStatus('AuthLogin', 'success', 'Login réussi', data);
+            } catch (error) {
+                updateStatus('AuthLogin', 'error', error.message);
+            }
+        }
+
+        async function testAuthVerify() {
+            updateStatus('AuthVerify', 'pending', 'Vérification du token...');
+            try {
+                const token = localStorage.getItem(CONFIG.STORAGE.USER_TOKEN);
+                if (!token) throw new Error('Pas de token trouvé - connectez-vous d\'abord');
+
+                const response = await fetch(`${CONFIG.API_BASE_URL}/auth/verify`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message || 'Vérification échouée');
+
+                updateStatus('AuthVerify', 'success', 'Token valide', data);
+            } catch (error) {
+                updateStatus('AuthVerify', 'error', error.message);
+            }
+        }
+
+        async function testAdminLogin() {
+            updateStatus('AdminLogin', 'pending', 'Admin auth en cours...');
+            try {
+                const email = document.getElementById('adminEmail').value;
+                const password = document.getElementById('adminPassword').value;
+
+                if (!email || !password) {
+                    throw new Error('Email et mot de passe admin requis');
+                }
+
+                const response = await fetch(`${CONFIG.API_BASE_URL}/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message || 'Admin login échoué');
+
+                localStorage.setItem(CONFIG.STORAGE.ADMIN_TOKEN, data.token);
+                updateStatus('AdminLogin', 'success', 'Admin login réussi', data);
+            } catch (error) {
+                updateStatus('AdminLogin', 'error', error.message);
+            }
+        }
+
+        // 📦 PRODUCTS TESTS
+        async function testGetProducts() {
+            updateStatus('GetProducts', 'pending', 'Chargement des produits...');
+            try {
+                const products = await PhenixAPI.getProducts();
+                updateStatus('GetProducts', 'success', 
+                    `${Array.isArray(products) ? products.length : 0} produit(s) trouvé(s)`, 
+                    Array.isArray(products) ? products.slice(0, 2) : products
+                );
+            } catch (error) {
+                updateStatus('GetProducts', 'error', error.message);
+            }
+        }
+
+        async function testSearchProducts() {
+            updateStatus('SearchProducts', 'pending', 'Recherche en cours...');
+            try {
+                const query = document.getElementById('searchQuery').value || 'laptop';
+                const results = await PhenixAPI.searchProducts(query);
+                updateStatus('SearchProducts', 'success',
+                    `${Array.isArray(results) ? results.length : 0} résultat(s) pour "${query}"`,
+                    Array.isArray(results) ? results.slice(0, 2) : results
+                );
+            } catch (error) {
+                updateStatus('SearchProducts', 'error', error.message);
+            }
+        }
+
+        // 🛒 CART TESTS
+        async function testGetCart() {
+            updateStatus('GetCart', 'pending', 'Récupération du panier...');
+            try {
+                const cart = await PhenixAPI.getCart();
+                const itemCount = cart?.data?.items?.length || 0;
+                updateStatus('GetCart', 'success', 
+                    `Panier chargé (${itemCount} article(s))`, 
+                    cart
+                );
+            } catch (error) {
+                updateStatus('GetCart', 'error', error.message);
+            }
+        }
+
+        async function testAddToCart() {
+            updateStatus('AddCart', 'pending', 'Ajout au panier...');
+            try {
+                const productId = document.getElementById('productId').value;
+                const quantity = parseInt(document.getElementById('cartQuantity').value) || 1;
+
+                if (!productId) throw new Error('ID Produit requis');
+                if (quantity < 1) throw new Error('Quantité invalide');
+
+                const result = await PhenixAPI.addToCart(productId, quantity);
+                updateStatus('AddCart', 'success', `Produit ajouté au panier (Qty: ${quantity})`, result);
+            } catch (error) {
+                updateStatus('AddCart', 'error', error.message);
+            }
+        }
+
+        // 📋 ORDERS TESTS
+        async function testGetOrders() {
+            updateStatus('GetOrders', 'pending', 'Chargement des commandes...');
+            try {
+                const orders = await PhenixAPI.getOrders();
+                updateStatus('GetOrders', 'success',
+                    `${Array.isArray(orders) ? orders.length : 0} commande(s) trouvée(s)`,
+                    Array.isArray(orders) ? orders.slice(0, 2) : orders
+                );
+            } catch (error) {
+                updateStatus('GetOrders', 'error', error.message);
+            }
+        }
+
+        async function testCreateOrder() {
+            updateStatus('CreateOrder', 'pending', 'Création de commande...');
+            try {
+                const deliveryAddress = document.getElementById('orderDelivery').value || '123 Rue Test, Paris';
+
+                const response = await fetch(`${CONFIG.API_BASE_URL}/orders`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem(CONFIG.STORAGE.USER_TOKEN)}`
+                    },
+                    body: JSON.stringify({ deliveryAddress })
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message || 'Création échouée');
+
+                updateStatus('CreateOrder', 'success', 'Commande créée', data);
+            } catch (error) {
+                updateStatus('CreateOrder', 'error', error.message);
+            }
+        }
+
+        // 💳 PAYMENT TESTS
+        async function testCreatePayment() {
+            updateStatus('CreatePayment', 'pending', 'Création du paiement...');
+            try {
+                const orderId = document.getElementById('paymentOrderId').value;
+                const amount = parseInt(document.getElementById('paymentAmount').value);
+
+                if (!orderId || !amount) throw new Error('Commande et montant requis');
+
+                const response = await fetch(`${CONFIG.API_BASE_URL}/payments/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem(CONFIG.STORAGE.USER_TOKEN)}`
+                    },
+                    body: JSON.stringify({ orderId, amount })
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message || 'Création échouée');
+
+                updateStatus('CreatePayment', 'success', 'Paiement initialisé', data);
+            } catch (error) {
+                updateStatus('CreatePayment', 'error', error.message);
+            }
+        }
+
+        async function testVerifyPayment() {
+            updateStatus('VerifyPayment', 'pending', 'Vérification du paiement...');
+            try {
+                const transactionId = document.getElementById('transactionId').value;
+
+                if (!transactionId) throw new Error('Transaction ID requis');
+
+                const response = await fetch(`${CONFIG.API_BASE_URL}/payments/verify`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem(CONFIG.STORAGE.USER_TOKEN)}`
+                    },
+                    body: JSON.stringify({ transactionId })
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message || 'Vérification échouée');
+
+                updateStatus('VerifyPayment', 'success', 'Paiement vérifié', data);
+            } catch (error) {
+                updateStatus('VerifyPayment', 'error', error.message);
+            }
+        }
+
+        // ⚙️ INFRASTRUCTURE TESTS
+        async function testHealth() {
+            updateStatus('Health', 'pending', 'Vérification serveur...');
+            try {
+                const response = await fetch(`${CONFIG.API_BASE_URL}/health`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error('Serveur non accessible');
+
+                updateStatus('Health', 'success', 'Serveur en bon état', data);
+            } catch (error) {
+                updateStatus('Health', 'error', error.message);
+            }
+        }
+
+        async function testCORSHeaders() {
+            updateStatus('CORS', 'pending', 'Vérification CORS...');
+            try {
+                const response = await fetch(`${CONFIG.API_BASE_URL}/products`, {
+                    method: 'OPTIONS',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const corsOrigin = response.headers.get('access-control-allow-origin');
+                const corsMethods = response.headers.get('access-control-allow-methods');
+
+                const corsInfo = {
+                    'Allow-Origin': corsOrigin || '❌ Pas reçu',
+                    'Allow-Methods': corsMethods || '❌ Pas reçu',
+                    'Current-Origin': window.location.origin,
+                    'Status': response.status
+                };
+
+                if (corsOrigin && corsOrigin.includes('front-phenix.netlify.app' || '*')) {
+                    updateStatus('CORS', 'success', 'CORS correctement configuré', corsInfo);
+                } else {
+                    updateStatus('CORS', 'error', 'CORS pas accepté pour Netlify', corsInfo);
+                }
+            } catch (error) {
+                updateStatus('CORS', 'error', error.message);
+            }
+        }
+
+        async function testMongoDB() {
+            updateStatus('MongoDB', 'pending', 'Vérification MongoDB...');
+            try {
+                // Try to get a product - if MongoDB is down, this will fail
+                const response = await fetch(`${CONFIG.API_BASE_URL}/products?limit=1`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response.status === 503) {
+                    throw new Error('MongoDB non accessible (Service Unavailable 503)');
+                }
+
+                const data = await response.json();
+                updateStatus('MongoDB', 'success', 'MongoDB connecté et fonctionnel', { 
+                    status: response.status,
+                    dataReceived: !!data,
+                    itemCount: Array.isArray(data) ? data.length : 'N/A'
+                });
+            } catch (error) {
+                updateStatus('MongoDB', 'error', error.message);
+            }
+        }
+
+        // Run all tests
+        async function runAllTests() {
+            testResults = { passed: 0, failed: 0 };
+            testGetProducts();
+            testSearchProducts();
+            testGetCart();
+            testHealth();
+            testCORSHeaders();
+            testMongoDB();
+            setTimeout(() => testAuthLogin(), 1000);
+        }
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            console.log('✓ Test API loaded');
+            console.log('📊 Configuration:', {
+                apiBaseUrl: CONFIG?.API_BASE_URL,
+                frontendUrl: CONFIG?.FRONTEND_URL,
+                environment: window.location.hostname
+            });
+        });
+    </script>
+</body>
+</html>
