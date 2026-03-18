@@ -1199,9 +1199,9 @@
     <!-- Message Defilant -->
     <div class="scrolling-banner">
         <div class="scrolling-text">
-            <span><i class="fas fa-phone-alt"></i>Pour tous vos besoins concernant le E-COMMERCE et le developpement de vos sites webs contacter le 627-75-38-90</span>
-            <span><i class="fas fa-phone-alt"></i>Pour tous vos besoins concernant le E-COMMERCE et le developpement de vos sites webs contacter le 627-75-38-90</span>
-            <span><i class="fas fa-phone-alt"></i>Pour tous vos besoins concernant le E-COMMERCE et le developpement de vos sites webs contacter le 627-75-38-90</span>
+            <span><i class="fas fa-phone-alt"></i>Pour tous vos besoins concernant le developpement de vos sites webs contacter le 627-75-38-90</span>
+            <span><i class="fas fa-phone-alt"></i>Pour tous vos besoins concernant le developpement de vos sites webs contacter le 627-75-38-90</span>
+            <span><i class="fas fa-phone-alt"></i>Pour tous vos besoins concernant le developpement de vos sites webs contacter le 627-75-38-90</span>
         </div>
     </div>
     
@@ -1682,7 +1682,7 @@
                 image = `${CONFIG?.BACKEND_URL}${image}`;
             }
             if (!image) {
-                image = 'https://via.placeholder.com/300x200?text=Produit';
+                image = 'https://placehold.co/300x200?text=Produit';
             }
             
             const badgeType = product.badge || '';
@@ -1699,7 +1699,10 @@
             card.innerHTML = `
                 ${badgeClass ? `<div class="product-badge ${badgeClass}">${getBadgeText(badgeType)}</div>` : ''}
                 <div class="product-image">
-                    <img src="${image}" alt="${product.name || product.nom}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200?text=Image+non+disponible'">
+                    <src="${image}" 
+  alt="${product.name || product.nom}" 
+  loading="lazy" 
+  onerror="this.onerror=null; this.src='https://placehold.co/300x200?text=Image+non+disponible';">
                 </div>
                 <div class="product-info">
                     <div class="product-category">${product.category || product.categorie || 'Non catégorisé'}</div>
