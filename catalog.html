@@ -920,7 +920,8 @@
                 src="${image}" 
                 alt="${product.name || product.nom || 'Produit'}" 
                 loading="lazy" 
-                onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop';"
+                onerror="if(!this.dataset.fallback) { this.dataset.fallback='true'; this.src='https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop'; this.style.opacity='0.6'; } else { this.style.display='none'; this.closest('.product-image').innerHTML='<div style=\"display:flex;align-items:center;justify-content:center;height:100%;color:#94A3B8;font-size:12px;\">Image indisponible</div>'; }"
+                onload="this.style.opacity='1';"
                 style="transition: opacity 0.3s ease; opacity: 1;"
             >
         </div>

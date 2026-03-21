@@ -1678,13 +1678,17 @@
             // Construire l'URL complète de l'image
             let image = product.image || product.image_url || '';
             
+            // Nettoyer les doubles slashes dans les URLs externes
+            if (image && image.startsWith('http')) {
+                image = image.replace(/([^:]\/)\/+/g, '$1'); // Corriger //assets en /assets
+            }
+            
             // Si l'image est une URL relative du serveur backend, la complèter
             if (image && !image.startsWith('http') && !image.startsWith('data:')) {
-                // Chemin relatif du serveur backend
                 image = `${CONFIG?.BACKEND_URL}${image}`;
             }
             
-            // Si pas d'image, utiliser un placeholder
+            // Si pas d'image ou URL invalide, utiliser un placeholder
             if (!image) {
                 image = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop';
             }
@@ -1703,8 +1707,10 @@
             card.innerHTML = `
                 ${badgeClass ? `<div class="product-badge ${badgeClass}">${getBadgeText(badgeType)}</div>` : ''}
                 <div class="product-image">
-                    <img src="${image}" alt="${product.name || product.nom}" loading="lazy" 
-                         onerror="this.src='https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop'; this.style.opacity='0.6';" 
+                    <img src="${image}" 
+                         alt="${product.name || product.nom}" 
+                         loading="lazy" 
+                         onerror="if(!this.dataset.fallback) { this.dataset.fallback='true'; this.src='https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop'; this.style.opacity='0.6'; } else { this.style.display='none'; this.closest('.product-image').innerHTML='<div style=\"display:flex;align-items:center;justify-content:center;height:100%;color:#94A3B8;font-size:12px;\">Image indisponible</div>'; }"
                          onload="this.style.opacity='1';"
                          style="opacity: 0.8; transition: opacity 0.3s ease;">
                 </div>
