@@ -998,7 +998,25 @@
                 const productId = product._id || item.productId;
                 const productName = product.name || 'Produit inconnu';
                 const productPrice = product.price || 0;
-                const productImage = product.image_url || product.image || product.imageUrl || `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Crect fill='%23ddd' width='90' height='90'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='12' fill='%23999'%3EMage manquante%3C/text%3E%3C/svg%3E`;
+                
+                // Construire l'URL de l'image correctement
+                let productImage = product.image_url || product.image || product.imageUrl || '';
+                
+                // Nettoyer les doubles slashes
+                if (productImage && productImage.startsWith('http')) {
+                    productImage = productImage.replace(/([^:]\/)\/+/g, '$1');
+                }
+                
+                // Compléter les URLs relatives
+                if (productImage && !productImage.startsWith('http') && !productImage.startsWith('data:')) {
+                    productImage = `${CONFIG?.BACKEND_URL}${productImage}`;
+                }
+                
+                // Fallback Unsplash
+                if (!productImage) {
+                    productImage = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100&h=100&fit=crop';
+                }
+                
                 const quantity = item.quantity || 1;
                 const itemTotal = productPrice * quantity;
                 
@@ -1008,7 +1026,12 @@
                     <div class="cart-item" data-id="${productId}">
                         <div class="product-info">
                             <div class="product-image">
-                                <img src="${productImage}" alt="${productName}" style="background: #ddd;">
+                                <img src="${productImage}" 
+                                     alt="${productName}" 
+                                     class="cart-product-img"
+                                     onload="handleImageLoad(this)"
+                                     onerror="handleImageError(this)"
+                                     style="background: #ddd; transition: opacity 0.3s ease; opacity: 0.8;">
                             </div>
                             <div class="product-details">
                                 <h4>${productName}</h4>
@@ -1046,6 +1069,25 @@
                 if (input) input.onchange = async () => { await changeQuantity(productId, parseInt(input.value || '1')); };
                 if (remove) remove.onclick = async () => { await removeFromCart(productId); };
             });
+        }
+
+        // ========== GESTION DES IMAGES ==========
+        function handleImageError(img) {
+            if (!img.dataset.fallbackAttempted) {
+                img.dataset.fallbackAttempted = 'true';
+                img.src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100&h=100&fit=crop';
+                img.style.opacity = '0.6';
+            } else {
+                img.style.display = 'none';
+                const container = img.parentElement;
+                if (container) {
+                    container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#94A3B8;font-size:11px;">Image indisponible</div>';
+                }
+            }
+        }
+
+        function handleImageLoad(img) {
+            img.style.opacity = '1';
         }
 
         async function changeQuantity(productId, newQty) {
