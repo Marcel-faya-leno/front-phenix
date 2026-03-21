@@ -474,8 +474,21 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            .checkout-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
             .checkout-form {
-                padding: 25px;
+                padding: 20px;
+                border-radius: 12px;
+            }
+
+            .order-summary {
+                position: static;
+                gap: 15px;
+                padding: 20px;
+                border-radius: 12px;
             }
             
             .progress-container {
@@ -519,6 +532,234 @@
                 width: 80px;
                 white-space: normal;
                 font-size: 12px;
+            }
+
+            .section-title {
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .form-input, .form-select {
+                padding: 12px;
+                font-size: 16px;
+            }
+
+            .btn-primary {
+                padding: 14px 24px;
+                font-size: 16px;
+                width: 100%;
+            }
+
+            .btn-back {
+                margin-top: 15px;
+                font-size: 14px;
+            }
+
+            .payment-method {
+                padding: 15px;
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+
+            .payment-icon {
+                width: 40px;
+                height: 40px;
+                margin-right: 10px;
+                font-size: 18px;
+            }
+
+            .order-summary {
+                top: auto;
+            }
+
+            .order-items {
+                max-height: 200px;
+            }
+
+            .summary-total {
+                font-size: 18px;
+                padding-top: 15px;
+                margin-top: 15px;
+            }
+
+            .modal-content {
+                padding: 30px 20px;
+                border-radius: 16px;
+                max-width: 90vw;
+            }
+
+            .modal-icon {
+                font-size: 60px;
+                margin-bottom: 20px;
+            }
+
+            .modal h2 {
+                font-size: 24px;
+                margin-bottom: 15px;
+            }
+
+            .modal p {
+                font-size: 14px;
+                margin-bottom: 20px;
+            }
+
+            header {
+                padding: 12px 15px;
+                flex-wrap: wrap;
+            }
+
+            .container {
+                margin: 20px auto;
+                padding: 0 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .checkout-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .checkout-form {
+                padding: 15px;
+                border-radius: 10px;
+            }
+
+            .order-summary {
+                padding: 15px;
+                border-radius: 10px;
+            }
+
+            .section-title {
+                font-size: 18px;
+                margin-bottom: 15px;
+                gap: 8px;
+            }
+
+            .form-group {
+                margin-bottom: 12px;
+            }
+
+            .form-label {
+                font-size: 14px;
+                margin-bottom: 6px;
+            }
+
+            .form-input, .form-select {
+                padding: 10px;
+                font-size: 16px;
+                border-radius: 8px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .btn {
+                padding: 12px 16px;
+                font-size: 14px;
+                border-radius: 8px;
+            }
+
+            .btn-primary {
+                padding: 12px 16px;
+                font-size: 14px;
+                width: 100%;
+                margin-top: 15px;
+            }
+
+            .payment-method {
+                padding: 12px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .payment-icon {
+                width: 35px;
+                height: 35px;
+                margin-right: 0;
+                margin-bottom: 10px;
+                font-size: 16px;
+            }
+
+            .payment-info h4 {
+                font-size: 14px;
+            }
+
+            .payment-info p {
+                font-size: 12px;
+            }
+
+            .order-item {
+                padding: 10px 0;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .order-item-qty, .order-item-price {
+                margin: 5px 0 0 0;
+            }
+
+            .summary-total {
+                font-size: 16px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+
+            .modal-content {
+                padding: 20px 15px;
+                border-radius: 12px;
+            }
+
+            .modal-icon {
+                font-size: 50px;
+                margin-bottom: 15px;
+            }
+
+            .modal h2 {
+                font-size: 20px;
+                margin-bottom: 12px;
+            }
+
+            .modal p {
+                font-size: 13px;
+                margin-bottom: 15px;
+            }
+
+            .progress-steps {
+                gap: 10px;
+            }
+
+            .step {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+
+            .step-label {
+                font-size: 11px;
+                width: 70px;
+                top: 50px;
+            }
+
+            .container {
+                margin: 15px auto;
+                padding: 0 10px;
+            }
+
+            input, select {
+                font-size: 16px !important;
             }
         }
 
@@ -583,44 +824,26 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">Prénom</label>
-                            <input type="text" class="form-input" id="first-name" placeholder="Ex: MARCEL FAYA" required>
+                            <input type="text" class="form-input" id="first-name" placeholder="Ex: MARCEL" required>
                             <small style="color: var(--danger); display: none;" id="error-firstName"></small>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Nom</label>
-                            <input type="text" class="form-input" id="last-name" placeholder="Ex: LENO" required>
+                            <input type="text" class="form-input" id="last-name" placeholder="Ex: FAYA LENO" required>
                             <small style="color: var(--danger); display: none;" id="error-lastName"></small>
                         </div>
                     </div>
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-input" id="email" placeholder="exemple@email.com" required>
-                            <small style="color: var(--danger); display: none;" id="error-email"></small>
+                            <label class="form-label">Ville</label>
+                            <input type="text" class="form-input" id="city" placeholder="Ex: Conakry" required>
+                            <small style="color: var(--danger); display: none;" id="error-city"></small>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Téléphone</label>
                             <input type="tel" class="form-input" id="phone" placeholder="Ex: 611 33 14 67" required>
                             <small style="color: var(--danger); display: none;" id="error-phone"></small>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Adresse</label>
-                        <input type="text" class="form-input" id="street" placeholder="Rue et numéro" required>
-                        <small style="color: var(--danger); display: none;" id="error-street"></small>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Ville</label>
-                            <input type="text" class="form-input" id="city" placeholder="Conakry" required>
-                            <small style="color: var(--danger); display: none;" id="error-city"></small>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Code postal</label>
-                            <input type="text" class="form-input" id="zip-code" placeholder="Code postal">
                         </div>
                     </div>
                 </div>
@@ -650,21 +873,10 @@
                 
                 <!-- Détails de paiement -->
                 <div class="form-group" id="payment-details">
-                    <h3 style="margin-bottom: 20px; color: var(--text);">Détails du paiement Orange Money</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Numéro Orange Money</label>
-                            <input type="tel" class="form-input" id="orange-number" placeholder="Ex: 611 33 14 67" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Code PIN</label>
-                            <input type="password" class="form-input" id="orange-pin" placeholder="Code PIN à 4 chiffres" maxlength="4" required>
-                        </div>
-                    </div>
-                    
+                    <h3 style="margin-bottom: 20px; color: var(--text);">Finaliser la commande</h3>
                     <div class="form-group">
                         <label class="form-label">Montant à payer</label>
-                        <input type="text" class="form-input" id="payment-amount" readonly>
+                        <input type="text" class="form-input" id="payment-amount" readonly style="cursor: not-allowed;">
                     </div>
                 </div>
                 
@@ -821,15 +1033,6 @@
                 hideFieldError('lastName');
             }
             
-            // Valider email
-            const email = document.getElementById('email').value.trim();
-            if (!email || !validateEmail(email)) {
-                showFieldError('email', 'Email invalide');
-                isValid = false;
-            } else {
-                hideFieldError('email');
-            }
-            
             // Valider téléphone
             const phone = document.getElementById('phone').value.trim();
             if (!phone || !validatePhone(phone)) {
@@ -837,15 +1040,6 @@
                 isValid = false;
             } else {
                 hideFieldError('phone');
-            }
-            
-            // Valider adresse
-            const street = document.getElementById('street').value.trim();
-            if (!street || street.length < 5) {
-                showFieldError('street', 'L\'adresse doit avoir au moins 5 caractères');
-                isValid = false;
-            } else {
-                hideFieldError('street');
             }
             
             // Valider ville
@@ -1069,11 +1263,8 @@
                 // Recuperer les informations du client
                 const firstName = document.getElementById('first-name').value.trim();
                 const lastName = document.getElementById('last-name').value.trim();
-                const email = document.getElementById('email').value.trim();
                 const phone = document.getElementById('phone').value.trim();
-                const street = document.getElementById('street').value.trim();
                 const city = document.getElementById('city').value.trim();
-                const zipCode = document.getElementById('zip-code').value.trim();
                 
                 // Charger les informations completes des produits depuis le serveur
                 let productsData = [];
@@ -1088,9 +1279,8 @@
                 let messageText = `NOUVELLE COMMANDE PHENIX TECH-SERVICES\n\n`;
                 messageText += `INFORMATIONS CLIENT:\n`;
                 messageText += `Nom: ${firstName} ${lastName}\n`;
-                messageText += `Email: ${email}\n`;
                 messageText += `Telephone: ${phone}\n`;
-                messageText += `Adresse: ${street}, ${zipCode} ${city}\n\n`;
+                messageText += `Ville: ${city}\n\n`;
                 
                 messageText += `ARTICLES COMMANDES:\n`;
                 messageText += `==================\n\n`;
