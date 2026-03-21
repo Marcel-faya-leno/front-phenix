@@ -1710,8 +1710,10 @@
                     <img src="${image}" 
                          alt="${product.name || product.nom}" 
                          loading="lazy" 
-                         onerror="if(!this.dataset.fallback) { this.dataset.fallback='true'; this.src='https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop'; this.style.opacity='0.6'; } else { this.style.display='none'; this.closest('.product-image').innerHTML='<div style=\"display:flex;align-items:center;justify-content:center;height:100%;color:#94A3B8;font-size:12px;\">Image indisponible</div>'; }"
-                         onload="this.style.opacity='1';"
+                         class="product-img"
+                         data-product-id="${productId}"
+                         onload="handleImageLoad(this)"
+                         onerror="handleImageError(this)"
                          style="opacity: 0.8; transition: opacity 0.3s ease;">
                 </div>
                 <div class="product-info">
@@ -1752,6 +1754,25 @@
 
         function formatPrice(price) {
             return new Intl.NumberFormat('fr-FR').format(price) + ' GNF';
+        }
+
+        // Fonction pour gérer les erreurs d'image
+        function handleImageError(img) {
+            if (!img.dataset.fallbackAttempted) {
+                img.dataset.fallbackAttempted = 'true';
+                img.src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop';
+                img.style.opacity = '0.6';
+            } else {
+                img.style.display = 'none';
+                const container = img.parentElement;
+                if (container) {
+                    container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#94A3B8;font-size:12px;">Image indisponible</div>';
+                }
+            }
+        }
+
+        function handleImageLoad(img) {
+            img.style.opacity = '1';
         }
 
         // Fonction pour gérer l'ajout au panier
