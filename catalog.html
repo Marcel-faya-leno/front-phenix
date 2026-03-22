@@ -41,6 +41,7 @@
             background-color: var(--dark);
             color: var(--text);
             overflow-x: hidden;
+            scroll-behavior: smooth;
         }
 
         .bg-effects {
@@ -1426,6 +1427,11 @@
 
             applySorting();
             displayProducts(filteredProducts);
+            
+            // Scroll vers les résultats si des résultats existent
+            if (filteredProducts.length > 0) {
+                scrollToResults();
+            }
         }
 
         // ========== RECHERCHE ==========
@@ -1453,6 +1459,25 @@
             filteredProducts = searchResults;
             applySorting();
             displayProducts(filteredProducts);
+            
+            // Scroll automatique vers les résultats
+            if (filteredProducts.length > 0) {
+                scrollToResults();
+            }
+        }
+
+        // ========== SCROLL AUTOMATIQUE AUX RÉSULTATS ==========
+        function scrollToResults() {
+            const productsGrid = document.getElementById('products-grid');
+            if (productsGrid) {
+                // Scroll avec décalage pour le header sticky
+                const headerHeight = document.querySelector('header').offsetHeight;
+                const targetPosition = productsGrid.offsetTop - headerHeight - 20;
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
         }
 
         // ========== TRI ==========
