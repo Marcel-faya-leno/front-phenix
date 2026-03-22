@@ -58,27 +58,26 @@ self.addEventListener('fetch', (event) => {
                 return cache.match(request).then((response) => {
                     if (response) {
                         console.log('📦 Image du cache:', url.href);
-                        // Vérifier la validité du cache en arrière-plan
-                        checkCacheValidity(cache, request);
                         return response;
                     }
 
                     // Si pas en cache, essayer le réseau
-                    return fetch(request).then((networkResponse) => {
-                        // Sauvegarder la réponse en cache
-                        if (networkResponse.ok) {
-                            cache.put(request, networkResponse.clone()).then(() => {
-                                console.log('💾 Image cachée:', url.href);
-                            }).catch((err) => {
-                                console.warn('⚠️ Erreur cache image:', err);
-                            });
-                        }
-                        return networkResponse;
-                    }).catch((error) => {
-                        console.error('❌ Erreur réseau pour image:', url.href);
-                        // Retourner l'image en cache même obsolète si le réseau échoue
-                        return cache.match(request);
-                    });
+                    return fetch(request)
+                        .then((networkResponse) => {
+                            // Sauvegarder la réponse en cache si OK
+                            if (networkResponse.ok && networkResponse.status === 200) {
+                                const responseToCache = networkResponse.clone();
+                                cache.put(request, responseToCache).catch((err) => {
+                                    console.warn('⚠️ Erreur cache image:', err);
+                                });
+                            }
+                            return networkResponse;
+                        })
+                        .catch((error) => {
+                            console.error('❌ Erreur réseau pour image:', url.href, error);
+                            // Retourner l'image en cache si le réseau échoue
+                            return cache.match(request) || new Response('Image non disponible', { status: 404 });
+                        });
                 });
             })
         );
@@ -91,9 +90,10 @@ self.addEventListener('fetch', (event) => {
             fetch(request)
                 .then((response) => {
                     if (response.ok) {
-                        // Mettre à jour le cache en arrière-plan
+                        // Mettre à jour le cache en arrière-plan avec un clone
+                        const responseToCache = response.clone();
                         caches.open(CACHE_NAME).then((cache) => {
-                            cache.put(request, response.clone());
+                            cache.put(request, responseToCache);
                         });
                         return response;
                     }
@@ -120,17 +120,19 @@ self.addEventListener('fetch', (event) => {
                 if (response) {
                     return response;
                 }
-                return fetch(request).then((response) => {
-                    if (request.method === 'GET' && response.ok) {
+                return fetch(request).then((networkResponse) => {
+                    if (request.method === 'GET' && networkResponse.ok && networkResponse.status === 200) {
+                        const responseToCache = networkResponse.clone();
                         caches.open(CACHE_NAME).then((cache) => {
-                            cache.put(request, response.clone());
+                            cache.put(request, responseToCache);
                         });
                     }
-                    return response;
+                    return networkResponse;
                 });
             })
             .catch(() => {
                 console.log('❌ Ressource non disponible hors ligne');
+                return new Response('Ressource non disponible', { status: 503 });
             })
     );
 });
