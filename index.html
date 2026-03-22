@@ -2844,6 +2844,19 @@
             }, 1000);
         });
 
+        // Enregistrer le Service Worker pour la persistance des images
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then((registration) => {
+                        console.log('✅ Service Worker enregistré:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('⚠️ Erreur d\'enregistrement du Service Worker:', error);
+                    });
+            });
+        }
+
         // Fonction pour mettre à jour le label du bouton de thème
         function updateThemeLabel() {
             const themeBtn = document.getElementById('theme-btn');
