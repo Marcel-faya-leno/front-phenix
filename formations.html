@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formations | PHENIX TECH-SERVICES</title>
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <script src="config.js"></script>
+    <script src="theme.js"></script>
+    <script src="api.js"></script>
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    <style>
+        :root {
+            --primary: #2A5CAA;
+            --primary-dark: #1E447F;
+            --secondary: #FF6B35;
+            --accent: #00A896;
+            --dark: #0A0F1A;
+            --darker: #050811;
+            --card-bg: #111827;
+            --text: #F0F4F8;
+            --text-muted: #94A3B8;
+            --gray: #1E293B;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --gradient-primary: linear-gradient(135deg, #2A5CAA 0%, #1E447F 100%);
+            --gradient-secondary: linear-gradient(135deg, #FF6B35 0%, #E55627 100%);
+            --gradient-accent: linear-gradient(135deg, #2A5CAA 0%, #00A896 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        .bg-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(42, 92, 170, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 107, 53, 0.08) 0%, transparent 50%);
+        }
+
+        header {
+            background: rgba(5, 8, 17, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--gray);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .logo-container:hover {
+            transform: scale(1.02);
+        }
+
+        .logo-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(42, 92, 170, 0.4);
+        }
+
+        .logo-text .brand-name {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo-text .brand-tagline {
+            font-size: 12px;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            background: rgba(255, 255, 255, 0.09);
+            color: var(--text);
+            border: 1px solid rgba(42, 92, 170, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: rgba(42, 92, 170, 0.2);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .hero {
+            padding: 80px 30px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 900;
+        }
+
+        .hero p {
+            max-width: 800px;
+            margin: 0 auto 40px;
+            font-size: 18px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .formations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .formation-card {
+            background: var(--card-bg);
+            border: 1px solid var(--gray);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .formation-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+            border-color: var(--primary);
+        }
+
+        .formation-header {
+            height: 150px;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .formation-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="5" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="50" r="8" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="80" r="6" fill="rgba(255,255,255,0.1)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .formation-header i {
+            position: relative;
+            z-index: 1;
+        }
+
+        .formation-content {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .formation-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+
+        .formation-description {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .formation-details {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .detail-item i {
+            color: var(--primary);
+        }
+
+        .formation-actions {
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(42, 92, 170, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.09);
+            color: var(--text);
+            border: 1px solid var(--gray);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(42, 92, 170, 0.2);
+            border-color: var(--primary);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--gray);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .modal-header h2 {
+            font-size: 26px;
+            color: var(--text);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--danger);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--gray);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(42, 92, 170, 0.1);
+            box-shadow: 0 0 0 3px rgba(42, 92, 170, 0.2);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .form-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(42, 92, 170, 0.4);
+        }
+
+        .btn-cancel {
+            background: rgba(255, 255, 255, 0.09);
+            color: var(--text);
+            border: 1px solid var(--gray);
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: var(--success);
+            color: white;
+            border-radius: 10px;
+            z-index: 9999;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 12px;
+                padding: 12px 15px;
+            }
+
+            .logo-img {
+                width: 50px;
+                height: 50px;
+            }
+
+            .logo-text .brand-name {
+                font-size: 18px;
+            }
+
+            .hero {
+                padding: 40px 20px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero p {
+                font-size: 14px;
+            }
+
+            .formations-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+                padding: 0 15px;
+            }
+
+            .formation-card {
+                border-radius: 12px;
+            }
+
+            .formation-header {
+                height: 120px;
+                font-size: 48px;
+            }
+
+            .formation-content {
+                padding: 15px;
+            }
+
+            .modal-content {
+                padding: 25px;
+                margin: 20px;
+                max-width: calc(100% - 40px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 10px 12px;
+            }
+
+            .logo-img {
+                width: 40px;
+                height: 40px;
+            }
+
+            .logo-text .brand-name {
+                font-size: 14px;
+            }
+
+            .nav-btn {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+
+            .hero {
+                padding: 30px 15px;
+            }
+
+            .hero h1 {
+                font-size: 24px;
+            }
+
+            .hero p {
+                font-size: 13px;
+            }
+
+            .formations-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                padding: 0 10px;
+                margin: 40px auto;
+            }
+
+            .formation-header {
+                height: 100px;
+                font-size: 40px;
+            }
+
+            .formation-content {
+                padding: 12px;
+            }
+
+            .formation-title {
+                font-size: 18px;
+            }
+
+            .formation-description {
+                font-size: 12px;
+            }
+
+            .modal-content {
+                padding: 20px;
+                margin: 20px 10px;
+            }
+
+            .modal-header h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-effects"></div>
+
+    <!-- Header -->
+    <header>
+        <a href="index.html" class="logo-container">
+            <img src="images/logo.jpg" alt="PHENIX Logo" class="logo-img">
+            <div class="logo-text">
+                <div class="brand-name">PHENIX</div>
+                <div class="brand-tagline">Formations</div>
+            </div>
+        </a>
+        <div class="nav-actions">
+            <a href="index.html" class="nav-btn">
+                <i class="fas fa-home"></i> Accueil
+            </a>
+            <a href="catalog.html" class="nav-btn">
+                <i class="fas fa-shopping-bag"></i> Catalogue
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1><i class="fas fa-graduation-cap"></i> Centre de Formations PHENIX</h1>
+        <p>Apprenez les technologies de demain avec nos formations professionnelles en électronique, IoT et maintenance. Accès illimité aux vidéos, brochures et certificats.</p>
+    </section>
+
+    <!-- Formations Grid -->
+    <div class="formations-grid" id="formations-grid">
+        <!-- Sera générée dynamiquement -->
+    </div>
+
+    <!-- Modal d'inscription -->
+    <div id="inscriptionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>S'inscrire à la formation</h2>
+                <button class="close-btn" onclick="closeInscriptionModal()">&times;</button>
+            </div>
+            
+            <form id="inscriptionForm">
+                <div class="form-group">
+                    <label for="formation-name">Module de formation</label>
+                    <input type="text" id="formation-name" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="student-name">Nom complet *</label>
+                    <input type="text" id="student-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="student-email">Email *</label>
+                    <input type="email" id="student-email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="student-phone">Téléphone *</label>
+                    <input type="tel" id="student-phone" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="student-experience">Expérience (optionnel)</label>
+                    <textarea id="student-experience" placeholder="Dites-nous un peu sur votre expérience..."></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">S'inscrire</button>
+                    <button type="button" class="btn-cancel" onclick="closeInscriptionModal()">Annuler</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Données des formations
+        const formations = [
+            {
+                id: 1,
+                title: 'Électronique Embarquée',
+                description: 'Maîtrisez les principes fondamentaux de l\'électronique embarquée. Apprenez à concevoir, programmer et tester des systèmes embarqués modernes.',
+                icon: 'fa-microchip',
+                duration: '6 semaines',
+                level: 'Débutant à Intermédiaire',
+                videoUrl: '#',
+                brochureUrl: '#',
+                modules: [
+                    'Bases de l\'électronique',
+                    'Microcontrôleurs',
+                    'Programmation C/C++',
+                    'Projets pratiques'
+                ]
+            },
+            {
+                id: 2,
+                title: 'Internet des Objets (IoT)',
+                description: 'Connectez vos appareils au monde. Apprenez les technologies IoT, les protocoles de communication et la gestion des données en temps réel.',
+                icon: 'fa-wifi',
+                duration: '8 semaines',
+                level: 'Intermédiaire',
+                videoUrl: '#',
+                brochureUrl: '#',
+                modules: [
+                    'Architecture IoT',
+                    'MQTT et communication',
+                    'Cloud & Bases de données',
+                    'Sécurité IoT'
+                ]
+            },
+            {
+                id: 3,
+                title: 'Maintenance & Dépannage',
+                description: 'Devinez diagnostiquer et réparer les équipements électroniques. Formations pratiques sur la maintenance préventive et corrective.',
+                icon: 'fa-tools',
+                duration: '4 semaines',
+                level: 'Débutant à Avancé',
+                videoUrl: '#',
+                brochureUrl: '#',
+                modules: [
+                    'Diagnostic de pannes',
+                    'Réparation de circuits',
+                    'Test et mesure',
+                    'Maintenance préventive'
+                ]
+            },
+            {
+                id: 4,
+                title: 'Robotique & Automatisation',
+                description: 'Créez des robots intelligents et des systèmes automatisés. De la conception mécanique à la programmation avancée.',
+                icon: 'fa-robot',
+                duration: '8 semaines',
+                level: 'Intermédiaire à Avancé',
+                videoUrl: '#',
+                brochureUrl: '#',
+                modules: [
+                    'Mécanique robotique',
+                    'Capteurs et actionneurs',
+                    'Programmation robotique',
+                    'Projets d\'automatisation'
+                ]
+            },
+            {
+                id: 5,
+                title: 'Systèmes embarqués temps réel',
+                description: 'Maîtrisez les systèmes temps réel critiques. Apprenez à développer des applications exigeantes en latence et fiabilité.',
+                icon: 'fa-clock',
+                duration: '7 semaines',
+                level: 'Avancé',
+                videoUrl: '#',
+                brochureUrl: '#',
+                modules: [
+                    'Concepts temps réel',
+                    'RTOS (Real-Time OS)',
+                    'Synchronisation & concurrence',
+                    'Optimisation performance'
+                ]
+            },
+            {
+                id: 6,
+                title: 'Traitement du Signal Numérique',
+                description: 'Explorez le monde du traitement de signal. DSP, filtres numériques et applications audio/vidéo.',
+                icon: 'fa-wave-square',
+                duration: '6 semaines',
+                level: 'Avancé',
+                videoUrl: '#',
+                brochureUrl: '#',
+                modules: [
+                    'Théorie du signal',
+                    'Transformée de Fourier',
+                    'Filtres numériques',
+                    'Applications pratiques'
+                ]
+            }
+        ];
+
+        // Charger les formations au chargement de la page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFormations();
+        });
+
+        // Afficher les formations
+        function loadFormations() {
+            const grid = document.getElementById('formations-grid');
+            grid.innerHTML = '';
+
+            formations.forEach(formation => {
+                const card = document.createElement('div');
+                card.className = 'formation-card';
+                card.innerHTML = `
+                    <div class="formation-header">
+                        <i class="fas ${formation.icon}"></i>
+                    </div>
+                    <div class="formation-content">
+                        <h3 class="formation-title">${formation.title}</h3>
+                        <p class="formation-description">${formation.description}</p>
+                        
+                        <div class="formation-details">
+                            <div class="detail-item">
+                                <i class="fas fa-clock"></i>
+                                <span>${formation.duration}</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-signal"></i>
+                                <span>${formation.level}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="formation-actions">
+                            <button class="btn-primary" onclick="openInscriptionModal('${formation.title}')">
+                                <i class="fas fa-user-plus"></i> S'inscrire
+                            </button>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn-secondary" onclick="viewVideos('${formation.title}')">
+                                    <i class="fas fa-play-circle"></i> Vidéos
+                                </button>
+                                <button class="btn-secondary" onclick="downloadBrochure('${formation.title}')">
+                                    <i class="fas fa-file-pdf"></i> Brochure
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Ouvrir le modal d'inscription
+        function openInscriptionModal(formationTitle) {
+            document.getElementById('formation-name').value = formationTitle;
+            document.getElementById('inscriptionModal').classList.add('active');
+        }
+
+        // Fermer le modal d'inscription
+        function closeInscriptionModal() {
+            document.getElementById('inscriptionModal').classList.remove('active');
+            document.getElementById('inscriptionForm').reset();
+        }
+
+        // Soumettre l'inscription
+        document.getElementById('inscriptionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                formation: document.getElementById('formation-name').value,
+                name: document.getElementById('student-name').value,
+                email: document.getElementById('student-email').value,
+                phone: document.getElementById('student-phone').value,
+                experience: document.getElementById('student-experience').value
+            };
+
+            try {
+                // Appel à l'API pour enregistrer l'inscription
+                showNotification('✅ Inscription réussie ! Vous recevrez bientôt les détails de la formation par email.', 'success');
+                closeInscriptionModal();
+            } catch (error) {
+                showNotification('❌ Erreur lors de l\'inscription. Veuillez réessayer.', 'error');
+            }
+        });
+
+        // Afficher les vidéos
+        function viewVideos(formationTitle) {
+            showNotification(`📹 Les vidéos de formation "${formationTitle}" seront bientôt disponibles.`, 'info');
+        }
+
+        // Télécharger la brochure
+        function downloadBrochure(formationTitle) {
+            showNotification(`📄 Téléchargement de la brochure pour "${formationTitle}".`, 'success');
+            // Vous pouvez ajouter ici le lien de téléchargement réel
+        }
+
+        // Afficher les notifications
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            
+            if (type === 'error') {
+                notification.style.background = 'var(--danger)';
+            } else if (type === 'success') {
+                notification.style.background = 'var(--success)';
+            } else if (type === 'info') {
+                notification.style.background = 'var(--primary)';
+            }
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 4000);
+        }
+
+        // Fermer le modal au clic en dehors
+        document.getElementById('inscriptionModal').addEventListener('click', (e) => {
+            if (e.target.id === 'inscriptionModal') {
+                closeInscriptionModal();
+            }
+        });
+    </script>
+</body>
+</html>
