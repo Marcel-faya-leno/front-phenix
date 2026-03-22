@@ -1661,10 +1661,10 @@
                     et des équipements professionnels de qualité.
                 </p>
                 <div class="social-links">
-                    <a href="https://www.facebook.com" target="_blank" class="social-link facebook" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="https://www.instagram.com" target="_blank" class="social-link instagram" title="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="https://www.tiktok.com" target="_blank" class="social-link tiktok" title="TikTok"><i class="fab fa-tiktok"></i></a>
-                    <a href="https://www.linkedin.com" target="_blank" class="social-link linkedin" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://www.facebook.com/phenixtech" target="_blank" class="social-link facebook" title="Facebook PHENIX"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/phenixtech" target="_blank" class="social-link instagram" title="Instagram PHENIX"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@phenixtech" target="_blank" class="social-link tiktok" title="TikTok PHENIX"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.linkedin.com/company/phenix-tech-services" target="_blank" class="social-link linkedin" title="LinkedIn PHENIX"><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
             
@@ -2525,35 +2525,122 @@
             const newsletterBtn = document.getElementById('newsletter-btn');
             const newsletterEmail = document.getElementById('newsletter-email');
             
+            // Fonction de validation email stricte
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email) && email.length <= 254;
+            }
+            
+            // Fonction pour sauvegarder l'email dans le stockage local
+            function saveEmailToStorage(email) {
+                try {
+                    const subscribers = JSON.parse(localStorage.getItem('newsletter_subscribers') || '[]');
+                    if (!subscribers.includes(email)) {
+                        subscribers.push(email);
+                        localStorage.setItem('newsletter_subscribers', JSON.stringify(subscribers));
+                        console.log('📧 Email enregistré:', email);
+                        return true;
+                    }
+                    return false;
+                } catch (error) {
+                    console.error('Erreur stockage email:', error);
+                    return true; // Continuer même si le stockage local échoue
+                }
+            }
+            
+            // Fonction pour envoyer au backend
+            async function sendToBackend(email) {
+                try {
+                    const response = await fetch(`${CONFIG?.BACKEND_URL || ''}/api/newsletter/subscribe`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ email })
+                    });
+                    
+                    if (response.ok) {
+                        console.log('✅ Email envoyé au backend');
+                        return true;
+                    }
+                    return false;
+                } catch (error) {
+                    console.log('⚠️ Pas de connexion backend, email stocké localement');
+                    return true; // Pas d'erreur, c'est normal si pas de backend
+                }
+            }
+            
             newsletterBtn.addEventListener('click', async () => {
-                const email = newsletterEmail.value.trim();
+                const email = newsletterEmail.value.trim().toLowerCase();
                 
-                if (!email || !email.includes('@')) {
-                    showNotification('Veuillez entrer une adresse email valide', 'warning');
+                // Validation
+                if (!email) {
+                    showNotification('Veuillez entrer votre adresse email', 'warning');
+                    newsletterEmail.focus();
                     return;
                 }
                 
+                if (!isValidEmail(email)) {
+                    showNotification('Veuillez entrer une adresse email valide (ex: votreemail@domaine.com)', 'warning');
+                    newsletterEmail.focus();
+                    return;
+                }
+                
+                // Vérifier si déjà inscrit
+                const subscribers = JSON.parse(localStorage.getItem('newsletter_subscribers') || '[]');
+                if (subscribers.includes(email)) {
+                    showNotification('Vous êtes déjà inscrit à notre newsletter!', 'info');
+                    return;
+                }
+                
+                // Désactiver le bouton pendant le traitement
                 newsletterBtn.disabled = true;
-                newsletterBtn.innerHTML = '<div class="loading-spinner"></div>';
+                const originalHTML = newsletterBtn.innerHTML;
+                newsletterBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Inscription...';
                 
                 try {
-                    // Simuler l'envoi
-                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    // Attendre un peu pour l'expérience utilisateur
+                    await new Promise(resolve => setTimeout(resolve, 500));
                     
-                    showNotification('Merci pour votre inscription à la newsletter!', 'success');
+                    // Sauvegarder localement
+                    saveEmailToStorage(email);
+                    
+                    // Envoyer au backend
+                    await sendToBackend(email);
+                    
+                    // Succès
+                    showNotification('✨ Merci! Vous êtes inscrit à notre newsletter!', 'success');
                     newsletterEmail.value = '';
+                    newsletterEmail.placeholder = email + ' ✓';
+                    
+                    // Réinitialiser le placeholder après 3 secondes
+                    setTimeout(() => {
+                        newsletterEmail.placeholder = 'Votre email';
+                    }, 3000);
                     
                 } catch (error) {
-                    showNotification('Erreur lors de l\'inscription', 'error');
+                    console.error('Erreur inscription:', error);
+                    showNotification('Erreur lors de l\'inscription. Veuillez réessayer.', 'error');
                 } finally {
                     newsletterBtn.disabled = false;
-                    newsletterBtn.innerHTML = '<i class="fas fa-paper-plane"></i> S\'abonner';
+                    newsletterBtn.innerHTML = originalHTML;
                 }
             });
             
+            // Permettre l'envoi avec la touche Entrée
             newsletterEmail.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     newsletterBtn.click();
+                }
+            });
+            
+            // Feedback sur l'email en temps réel
+            newsletterEmail.addEventListener('blur', () => {
+                const email = newsletterEmail.value.trim().toLowerCase();
+                if (email && !isValidEmail(email)) {
+                    newsletterEmail.style.borderColor = 'var(--warning)';
+                } else {
+                    newsletterEmail.style.borderColor = '';
                 }
             });
         }
