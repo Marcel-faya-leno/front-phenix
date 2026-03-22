@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Livraison Rapide | PHENIX TECH-SERVICES</title>
+    <title>Support Projet | PHENIX TECH-SERVICES</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/responsive.css">
     <script src="config.js"></script>
@@ -18,7 +18,7 @@
             --text: #F0F4F8;
             --text-muted: #94A3B8;
             --gray: #1E293B;
-            --warning: #F59E0B;
+            --success: #10B981;
         }
 
         * {
@@ -166,7 +166,7 @@
 
         .feature-icon {
             font-size: 48px;
-            color: var(--warning);
+            color: var(--success);
             margin-bottom: 20px;
         }
 
@@ -181,46 +181,64 @@
             line-height: 1.6;
         }
 
-        .pricing-table {
-            width: 100%;
-            border-collapse: collapse;
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 20px;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 50px;
+            width: 2px;
+            height: calc(100% + 30px);
+            background: linear-gradient(to bottom, var(--primary), transparent);
+        }
+
+        .timeline-item:last-child::before {
+            display: none;
+        }
+
+        .timeline-marker {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+
+        .timeline-content {
+            flex-grow: 1;
             background: var(--card-bg);
             border: 1px solid var(--gray);
             border-radius: 12px;
-            overflow: hidden;
-            margin-top: 30px;
+            padding: 20px;
         }
 
-        .pricing-table th {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 20px;
-            text-align: left;
-            font-weight: 600;
+        .timeline-content h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--text);
         }
 
-        .pricing-table td {
-            padding: 20px;
-            border-bottom: 1px solid var(--gray);
+        .timeline-content p {
             color: var(--text-muted);
-        }
-
-        .pricing-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .pricing-table tr:hover {
-            background: rgba(42, 92, 170, 0.1);
-        }
-
-        .delivery-badge {
-            display: inline-block;
-            background: var(--primary);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
+            line-height: 1.6;
         }
 
         .cta-section {
@@ -290,13 +308,13 @@
                 grid-template-columns: 1fr;
             }
 
-            .pricing-table {
-                font-size: 14px;
+            .timeline-item {
+                flex-direction: column;
             }
 
-            .pricing-table th,
-            .pricing-table td {
-                padding: 15px;
+            .timeline-item::before {
+                left: 30px;
+                top: 60px;
             }
 
             .content {
@@ -329,15 +347,6 @@
             .section-title {
                 font-size: 24px;
             }
-
-            .pricing-table {
-                font-size: 12px;
-            }
-
-            .pricing-table th,
-            .pricing-table td {
-                padding: 10px;
-            }
         }
     </style>
 </head>
@@ -359,92 +368,93 @@
     </header>
 
     <section class="hero">
-        <h1><i class="fas fa-shipping-fast"></i> Livraison Rapide</h1>
-        <p>Recevez vos composants électroniques rapidement et en toute sécurité</p>
+        <h1><i class="fas fa-tasks"></i> Support Projet</h1>
+        <p>Un accompagnement complet de la conception à la livraison de votre projet</p>
     </section>
 
     <div class="content">
         <div class="section">
-            <h2 class="section-title">Nos Services de Livraison</h2>
+            <h2 class="section-title">Nos Services de Support</h2>
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-bolt"></i></div>
-                    <h3>Livraison Express</h3>
-                    <p>Livraison en 24-48h pour les commandes passées avant midi.</p>
+                    <div class="feature-icon"><i class="fas fa-handshake"></i></div>
+                    <h3>Gestion de Projet</h3>
+                    <p>Suivi rigoureux de votre projet avec jalons clairs et livrables définis.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-map-marked-alt"></i></div>
-                    <h3>Suivi en Temps Réel</h3>
-                    <p>Suivez votre colis en direct avec numéro de suivi unique.</p>
+                    <div class="feature-icon"><i class="fas fa-users"></i></div>
+                    <h3>Équipe Dédiée</h3>
+                    <p>Une équipe d'experts assignée exclusivement à votre projet.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
-                    <h3>Emballage Sécurisé</h3>
-                    <p>Emballage professionnel pour protéger vos composants.</p>
+                    <div class="feature-icon"><i class="fas fa-calendar-check"></i></div>
+                    <h3>Respect des Délais</h3>
+                    <p>Engagement sur les délais de livraison et les étapes clés.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-check-circle"></i></div>
-                    <h3>Signature Requise</h3>
-                    <p>Livraison avec signature pour garantir la réception.</p>
+                    <div class="feature-icon"><i class="fas fa-comments"></i></div>
+                    <h3>Communication Régulière</h3>
+                    <p>Rapports d'avancement hebdomadaires et réunions de suivi.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-redo"></i></div>
-                    <h3>Retour Gratuit</h3>
-                    <p>Retour sans frais en cas de défaut ou insatisfaction.</p>
+                    <div class="feature-icon"><i class="fas fa-bug"></i></div>
+                    <h3>Gestion des Risques</h3>
+                    <p>Identification et mitigation proactive des risques du projet.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-headset"></i></div>
-                    <h3>Support Livraison</h3>
-                    <p>Équipe disponible pour répondre à vos questions.</p>
+                    <div class="feature-icon"><i class="fas fa-medal"></i></div>
+                    <h3>Qualité Garantie</h3>
+                    <p>Tests rigoureux et garantie de qualité sur tous les livrables.</p>
                 </div>
             </div>
         </div>
 
         <div class="section">
-            <h2 class="section-title">Options de Livraison</h2>
-            <table class="pricing-table">
-                <thead>
-                    <tr>
-                        <th>Option de Livraison</th>
-                        <th>Délai</th>
-                        <th>Coût</th>
-                        <th>Suivi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Express 24h</strong></td>
-                        <td><span class="delivery-badge">24h</span></td>
-                        <td>5 000 GNF</td>
-                        <td><i class="fas fa-check" style="color: var(--primary);"></i></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Rapide 48h</strong></td>
-                        <td><span class="delivery-badge">48h</span></td>
-                        <td>3 000 GNF</td>
-                        <td><i class="fas fa-check" style="color: var(--primary);"></i></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Standard 3-5j</strong></td>
-                        <td><span class="delivery-badge">3-5 jours</span></td>
-                        <td>2 000 GNF</td>
-                        <td><i class="fas fa-check" style="color: var(--primary);"></i></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Économique 5-7j</strong></td>
-                        <td><span class="delivery-badge">5-7 jours</span></td>
-                        <td>Gratuit</td>
-                        <td><i class="fas fa-check" style="color: var(--primary);"></i></td>
-                    </tr>
-                </tbody>
-            </table>
+            <h2 class="section-title">Phases du Projet</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-marker"><i class="fas fa-lightbulb"></i></div>
+                    <div class="timeline-content">
+                        <h4>1. Conception & Planning</h4>
+                        <p>Définition des exigences, architecture système et planification détaillée.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker"><i class="fas fa-code"></i></div>
+                    <div class="timeline-content">
+                        <h4>2. Développement</h4>
+                        <p>Implémentation des modules selon les spécifications approuvées.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker"><i class="fas fa-flask"></i></div>
+                    <div class="timeline-content">
+                        <h4>3. Tests & Validation</h4>
+                        <p>Tests unitaires, d'intégration et système complets.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker"><i class="fas fa-rocket"></i></div>
+                    <div class="timeline-content">
+                        <h4>4. Déploiement</h4>
+                        <p>Installation en production et formation utilisateur.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker"><i class="fas fa-headset"></i></div>
+                    <div class="timeline-content">
+                        <h4>5. Support Continu</h4>
+                        <p>Maintenance, mises à jour et support post-livraison.</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="cta-section">
-            <h2>Commandez Maintenant</h2>
-            <p>Choisissez votre option de livraison et recevez vos composants rapidement</p>
-            <a href="catalog.html" class="btn">
-                <i class="fas fa-shopping-bag"></i> Voir le Catalogue
+            <h2>Prêt à Démarrer ?</h2>
+            <p>Contactez-nous pour discuter de votre projet et des détails du support</p>
+            <a href="https://wa.me/224626449462" target="_blank" class="btn">
+                <i class="fab fa-whatsapp"></i> Démarrer un Projet
             </a>
         </div>
     </div>
