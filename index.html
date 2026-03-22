@@ -1758,15 +1758,20 @@
             
             async getProducts(limit = 50, offset = 0) {
                 try {
-                    // API réelle
-                    const response = await fetch(`/api/products?limit=${limit}&offset=${offset}`);
+                    // API réelle - Utiliser le backend URL complet
+                    const apiUrl = `${CONFIG?.BACKEND_URL || 'https://backend-phenix.onrender.com'}/api/products?limit=${limit}&offset=${offset}`;
+                    console.log('🔗 Appel API:', apiUrl);
+                    
+                    const response = await fetch(apiUrl);
                     if (response.ok) {
                         const data = await response.json();
                         console.log('📦 Produits chargés:', data.length);
                         return data;
                     }
+                    console.error('❌ Réponse API:', response.status, response.statusText);
                     throw new Error('API error');
                 } catch (error) {
+                    console.log('⚠️ Erreur API:', error.message);
                     console.log('⚠️ Utilisation des produits par défaut');
                     // Données par défaut pour la démo
                     return [
@@ -1842,12 +1847,14 @@
             
             async getCategories() {
                 try {
-                    const response = await fetch('/api/categories');
+                    const apiUrl = `${CONFIG?.BACKEND_URL || 'https://backend-phenix.onrender.com'}/api/categories`;
+                    const response = await fetch(apiUrl);
                     if (response.ok) {
                         return await response.json();
                     }
                     throw new Error('API error');
                 } catch (error) {
+                    console.log('⚠️ Catégories par défaut');
                     // Catégories par défaut
                     return [
                         { id: '1', name: "Composants électroniques", icon: "fas fa-microchip", count: 245 },
@@ -1864,7 +1871,8 @@
             
             async getStats() {
                 try {
-                    const response = await fetch('/api/stats');
+                    const apiUrl = `${CONFIG?.BACKEND_URL || 'https://backend-phenix.onrender.com'}/api/stats`;
+                    const response = await fetch(apiUrl);
                     if (response.ok) {
                         const data = await response.json();
                         console.log('📈 Stats chargées:', data);
