@@ -55,7 +55,7 @@ const ThemeManager = {
         root.style.setProperty('--overlay-bg', 'rgba(0, 0, 0, 0.5)');
         root.style.setProperty('--hover-bg', 'rgba(42, 92, 170, 0.08)');
         root.style.setProperty('--focus-bg', 'rgba(42, 92, 170, 0.12)');
-        root.style.setProperty('--product-image-bg', 'linear-gradient(135deg, #f3f4f6, #e5e7eb)');
+        root.style.setProperty('--product-image-bg', '#FFFFFF');
     },
     
     // Appliquer le thème sombre (par défaut)
@@ -86,7 +86,7 @@ const ThemeManager = {
         root.style.setProperty('--overlay-bg', 'rgba(0, 0, 0, 0.7)');
         root.style.setProperty('--hover-bg', 'rgba(42, 92, 170, 0.1)');
         root.style.setProperty('--focus-bg', 'rgba(42, 92, 170, 0.15)');
-        root.style.setProperty('--product-image-bg', 'linear-gradient(135deg, #1a1f2e, #0f1320)');
+        root.style.setProperty('--product-image-bg', '#FFFFFF');
     },
     
     // Basculer entre les thèmes
