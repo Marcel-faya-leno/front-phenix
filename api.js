@@ -500,17 +500,38 @@ const PhenixAPI = {
      */
     async updateCartItem(productId, quantity) {
         try {
-            const result = await this.fetch(`${this.config.apiBase}/cart/update/${productId}`, {
-                method: 'PUT',
-                body: { quantity }
-            });
-
-            if (result.success && result.data) {
-                localStorage.setItem(CONFIG?.STORAGE?.CART_ITEMS, JSON.stringify(result.data.items || []));
-                return result;
+            // 1. Mettre à jour le localStorage en priorité (toujours disponible)
+            const cart = JSON.parse(localStorage.getItem(CONFIG?.STORAGE?.CART_ITEMS) || '[]');
+            const itemIndex = cart.findIndex(item => (item.productId?._id || item.productId) === productId);
+            
+            if (itemIndex >= 0) {
+                if (quantity <= 0) {
+                    cart.splice(itemIndex, 1);
+                } else {
+                    cart[itemIndex].quantity = quantity;
+                    cart[itemIndex].updatedAt = new Date().toISOString();
+                }
+                localStorage.setItem(CONFIG?.STORAGE?.CART_ITEMS, JSON.stringify(cart));
+                console.log('[API] Panier mis à jour localement');
+                
+                // 2. Essayer de synchroniser avec le backend en arrière-plan
+                try {
+                    const result = await this.fetch(`${this.config.apiBase}/cart/update/${productId}`, {
+                        method: 'PUT',
+                        body: { quantity }
+                    });
+                    if (result.success) {
+                        console.log('[API] Synchronisation panier avec backend réussie');
+                    }
+                } catch (syncError) {
+                    // Le backend n'a peut-être pas cet endpoint, on continue avec le localStorage
+                    console.warn('[API] Sync backend non disponible (404?):', syncError.message);
+                }
+                
+                return { success: true, data: { items: cart } };
             }
-
-            throw new Error(result.message || 'Erreur mise à jour panier');
+            
+            throw new Error('Produit non trouvé dans le panier');
         } catch (error) {
             console.error('[API] Erreur updateCartItem:', error);
             throw error;

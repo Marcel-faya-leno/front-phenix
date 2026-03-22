@@ -65,18 +65,12 @@ self.addEventListener('fetch', (event) => {
 
                     // Si pas en cache, essayer le réseau
                     return fetch(request).then((networkResponse) => {
-                        // Sauvegarder la réponse en cache avec timestamp
+                        // Sauvegarder la réponse en cache
                         if (networkResponse.ok) {
-                            const responseToCache = networkResponse.clone();
-                            cache.put(request, new Response(
-                                responseToCache.body,
-                                {
-                                    status: networkResponse.status,
-                                    statusText: networkResponse.statusText,
-                                    headers: new Headers(networkResponse.headers)
-                                }
-                            )).then(() => {
+                            cache.put(request, networkResponse.clone()).then(() => {
                                 console.log('💾 Image cachée:', url.href);
+                            }).catch((err) => {
+                                console.warn('⚠️ Erreur cache image:', err);
                             });
                         }
                         return networkResponse;
