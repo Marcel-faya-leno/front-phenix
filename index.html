@@ -2056,16 +2056,20 @@
                 default: badgeClass = '';
             }
             
+            // Vérifier si l'image est déjà connue comme cassée
+            const isKnownBad = ImageCache.isBad(image);
+            
             card.innerHTML = `
                 ${badgeClass ? `<div class="product-badge ${badgeClass}">${getBadgeText(badgeType)}</div>` : ''}
                 <div class="product-image">
-                    <img src="${image}" 
+                    <img src="${isKnownBad ? 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop' : image}" 
                          alt="${product.name || product.nom}" 
                          loading="lazy" 
                          class="product-img"
                          data-product-id="${productId}"
+                         data-original-src="${image}"
                          onload="handleImageLoad(this)"
-                         onerror="handleImageError(this)"
+                         onerror="handleImageError(this, 0)"
                          style="opacity: 0.8; transition: opacity 0.3s ease;">
                 </div>
                 <div class="product-info">
@@ -2108,23 +2112,115 @@
             return new Intl.NumberFormat('fr-FR').format(price) + ' GNF';
         }
 
-        // Fonction pour gérer les erreurs d'image
-        function handleImageError(img) {
+        // Système de cache d'images robuste
+        const ImageCache = {
+            cache: {},
+            brokenImages: new Set(),
+            
+            init() {
+                // Charger le cache depuis localStorage
+                const saved = localStorage.getItem('image_cache');
+                if (saved) {
+                    try {
+                        this.cache = JSON.parse(saved);
+                    } catch (e) {
+                        console.log('⚠️ Cache image corrompu');
+                    }
+                }
+            },
+            
+            save() {
+                localStorage.setItem('image_cache', JSON.stringify(this.cache));
+            },
+            
+            markGood(url) {
+                this.cache[url] = { status: 'good', time: Date.now() };
+                this.save();
+            },
+            
+            markBad(url) {
+                this.cache[url] = { status: 'bad', time: Date.now() };
+                this.brokenImages.add(url);
+                this.save();
+            },
+            
+            isBad(url) {
+                return this.brokenImages.has(url) || (this.cache[url]?.status === 'bad');
+            }
+        };
+        
+        // Initialiser le cache au chargement
+        ImageCache.init();
+
+        // Fonction pour gérer les erreurs d'image avec retry
+        function handleImageError(img, retryCount = 0) {
+            const originalSrc = img.dataset.originalSrc || img.src;
+            const maxRetries = 3;
+            const retryDelay = 2000 + (retryCount * 1000); // 2s, 3s, 4s...
+            
+            console.log(`❌ Erreur image: ${originalSrc} (tentative ${retryCount + 1}/${maxRetries})`);
+            
+            // Marquer comme cassée dans le cache
+            ImageCache.markBad(originalSrc);
+            
+            // Essayer 3 fois avant d'utiliser un fallback
+            if (retryCount < maxRetries) {
+                console.log(`🔄 Nouvelle tentative dans ${retryDelay}ms...`);
+                setTimeout(() => {
+                    img.src = originalSrc + '?t=' + Date.now(); // Forcer rechargement avec timestamp
+                }, retryDelay);
+                return;
+            }
+            
+            // Après 3 tentatives, essayer les fallbacks
             if (!img.dataset.fallbackAttempted) {
                 img.dataset.fallbackAttempted = 'true';
-                img.src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop';
-                img.style.opacity = '0.6';
-            } else {
-                img.style.display = 'none';
-                const container = img.parentElement;
-                if (container) {
-                    container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#94A3B8;font-size:12px;">Image indisponible</div>';
-                }
+                // Fallback 1: Placeholder Unsplash haute qualité
+                const fallbackUrl = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop&q=80&cache=' + Date.now();
+                img.src = fallbackUrl;
+                img.style.opacity = '0.7';
+                console.log('🔗 Fallback #1: Unsplash placeholder');
+                
+                // Vérifier le fallback aussi
+                img.onerror = function() {
+                    console.log('⚠️ Fallback aussi échoué');
+                    img.style.display = 'none';
+                    const container = img.parentElement;
+                    if (container) {
+                        container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#94A3B8;font-size:12px;"><i class="fas fa-image" style="margin-right:5px;"></i>Image indisponible</div>';
+                    }
+                };
             }
         }
 
         function handleImageLoad(img) {
+            if (!img.dataset.originalSrc) {
+                img.dataset.originalSrc = img.src;
+            }
             img.style.opacity = '1';
+            // Marquer comme bonne dans le cache
+            ImageCache.markGood(img.src);
+            console.log('✅ Image chargée: ' + img.src);
+        }
+
+        // Fonction pour recharger les images brisées périodiquement
+        function reloadBrokenImages() {
+            setInterval(() => {
+                const brokenImages = document.querySelectorAll('img[data-original-src]');
+                let reloaded = 0;
+                
+                brokenImages.forEach(img => {
+                    if (img.complete && !img.naturalHeight && img.src !== img.dataset.originalSrc) {
+                        // L'image n'a pas pu charger
+                        reloaded++;
+                        img.src = img.dataset.originalSrc + '?t=' + Date.now();
+                    }
+                });
+                
+                if (reloaded > 0) {
+                    console.log(`🔄 Rechargement de ${reloaded} images défectueuses`);
+                }
+            }, 5 * 60 * 1000); // Vérifier toutes les 5 minutes
         }
 
         // Fonction pour gérer l'ajout au panier
@@ -2703,6 +2799,21 @@
             await loadStats();
             await loadProducts();
             await loadCategories();
+            
+            // Démarrer la vérification périodique des images cassées
+            reloadBrokenImages();
+            
+            // Rafraîchir les données des produits toutes les 30 minutes
+            // pour récupérer les nouvelles URLs d'images du backend
+            setInterval(async () => {
+                console.log('🔄 Rafraîchissement des données produits...');
+                try {
+                    await loadProducts();
+                } catch (error) {
+                    console.log('⚠️ Erreur lors du rafraîchissement:', error);
+                }
+            }, 30 * 60 * 1000); // Chaque 30 minutes
+            
             
             // Mettre à jour le compteur du panier
             await window.PhenixAPI.updateCartCount();
