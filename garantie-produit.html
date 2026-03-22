@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garantie Produit | PHENIX TECH-SERVICES</title>
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <script src="config.js"></script>
+    <script src="theme.js"></script>
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    <style>
+        :root {
+            --primary: #2A5CAA;
+            --secondary: #FF6B35;
+            --dark: #0A0F1A;
+            --darker: #050811;
+            --card-bg: #111827;
+            --text: #F0F4F8;
+            --text-muted: #94A3B8;
+            --gray: #1E293B;
+            --success: #10B981;
+            --warning: #F59E0B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        .bg-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: radial-gradient(circle at 20% 80%, rgba(42, 92, 170, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 107, 53, 0.08) 0%, transparent 50%);
+        }
+
+        header {
+            background: rgba(5, 8, 17, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--gray);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .logo-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .logo-text .brand-name {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            background: rgba(255, 255, 255, 0.09);
+            color: var(--text);
+        }
+
+        .nav-btn:hover {
+            background: rgba(42, 92, 170, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .hero {
+            padding: 80px 30px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 900;
+        }
+
+        .hero p {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 18px;
+            color: var(--text-muted);
+        }
+
+        .content {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            color: var(--text);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--gray);
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            color: var(--success);
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: var(--text);
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .warranty-coverage {
+            background: var(--card-bg);
+            border: 1px solid var(--gray);
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .warranty-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .warranty-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .warranty-check {
+            color: var(--success);
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .warranty-text h4 {
+            color: var(--text);
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+
+        .warranty-text p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .warranty-plans {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .plan-card {
+            background: var(--card-bg);
+            border: 2px solid var(--gray);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .plan-card.featured {
+            border-color: var(--primary);
+            box-shadow: 0 0 30px rgba(42, 92, 170, 0.2);
+        }
+
+        .plan-logo {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .plan-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .plan-duration {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .plan-features {
+            text-align: left;
+            margin-top: 15px;
+        }
+
+        .plan-features li {
+            list-style: none;
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .plan-features i {
+            color: var(--success);
+            font-size: 14px;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            border-radius: 16px;
+            padding: 50px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .cta-section h2 {
+            font-size: 32px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 30px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        footer {
+            background: rgba(5, 8, 17, 0.95);
+            border-top: 1px solid var(--gray);
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .hero {
+                padding: 40px 20px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .warranty-plans {
+                grid-template-columns: 1fr;
+            }
+
+            .content {
+                padding: 0 15px;
+            }
+
+            .cta-section {
+                padding: 30px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 10px 12px;
+            }
+
+            .logo-img {
+                width: 40px;
+                height: 40px;
+            }
+
+            .hero {
+                padding: 30px 15px;
+            }
+
+            .hero h1 {
+                font-size: 24px;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            .warranty-coverage {
+                padding: 20px;
+            }
+
+            .warranty-item {
+                gap: 10px;
+            }
+
+            .warranty-check {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-effects"></div>
+
+    <header>
+        <a href="index.html" class="logo-container">
+            <img src="images/logo.jpg" alt="PHENIX Logo" class="logo-img">
+            <div class="logo-text">
+                <div class="brand-name">PHENIX</div>
+            </div>
+        </a>
+        <div>
+            <a href="index.html" class="nav-btn">
+                <i class="fas fa-home"></i> Accueil
+            </a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1><i class="fas fa-shield-alt"></i> Garantie Produit</h1>
+        <p>Vos composants électroniques garantis avec une couverture complète</p>
+    </section>
+
+    <div class="content">
+        <div class="section">
+            <h2 class="section-title">Nos Services de Garantie</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-certificate"></i></div>
+                    <h3>Garantie 2 Ans</h3>
+                    <p>Couverture complète pendant 2 ans contre tout défaut de fabrication.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-undo"></i></div>
+                    <h3>Retour sans Questions</h3>
+                    <p>Retour gratuit dans les 30 jours sans frais ni justification.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-headset"></i></div>
+                    <h3>Support Technique</h3>
+                    <p>Assistance technique gratuite par téléphone et email.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-sync"></i></div>
+                    <h3>Remplacement Gratuit</h3>
+                    <p>Remplacement du produit en cas de défaut constaté.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-plus-circle"></i></div>
+                    <h3>Garantie Étendue</h3>
+                    <p>Option de garantie étendue jusqu'à 5 ans disponible.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-check-circle"></i></div>
+                    <h3>Qualité Certifiée</h3>
+                    <p>Tous nos produits sont testés et certifiés ISO 9001.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Couverture de la Garantie</h2>
+            <div class="warranty-coverage">
+                <div class="warranty-item">
+                    <div class="warranty-check"><i class="fas fa-check"></i></div>
+                    <div class="warranty-text">
+                        <h4>Défauts de Fabrication</h4>
+                        <p>Tous les défauts detectés à la fabrication sont couverts.</p>
+                    </div>
+                </div>
+                <div class="warranty-item">
+                    <div class="warranty-check"><i class="fas fa-check"></i></div>
+                    <div class="warranty-text">
+                        <h4>Dommages Matériels</h4>
+                        <p>Défaillance matérielle prématurée due à un défaut du produit.</p>
+                    </div>
+                </div>
+                <div class="warranty-item">
+                    <div class="warranty-check"><i class="fas fa-check"></i></div>
+                    <div class="warranty-text">
+                        <h4>Composants Défectueux</h4>
+                        <p>Remplacement des composants défectueux sur le produit.</p>
+                    </div>
+                </div>
+                <div class="warranty-item">
+                    <div class="warranty-check"><i class="fas fa-check"></i></div>
+                    <div class="warranty-text">
+                        <h4>Réparation ou Remplacement</h4>
+                        <p>Au choix : réparation gracieuse ou remplacement du produit.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Plans de Garantie Disponibles</h2>
+            <div class="warranty-plans">
+                <div class="plan-card">
+                    <div class="plan-logo"><i class="fas fa-box"></i></div>
+                    <div class="plan-name">Plan Standard</div>
+                    <div class="plan-duration">2 ans</div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> Couverture complète 2 ans</li>
+                        <li><i class="fas fa-check"></i> Support technique illimité</li>
+                        <li><i class="fas fa-check"></i> Remplacement gratuit</li>
+                        <li><i class="fas fa-check"></i> Retour 30 jours gratuit</li>
+                    </ul>
+                </div>
+                <div class="plan-card featured">
+                    <div class="plan-logo"><i class="fas fa-star"></i></div>
+                    <div class="plan-name">Plan Premium</div>
+                    <div class="plan-duration">3 ans</div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> Couverture 3 ans complète</li>
+                        <li><i class="fas fa-check"></i> Support prioritaire 24/7</li>
+                        <li><i class="fas fa-check"></i> Remplacement express</li>
+                        <li><i class="fas fa-check"></i> Retour 60 jours gratuit</li>
+                    </ul>
+                </div>
+                <div class="plan-card">
+                    <div class="plan-logo"><i class="fas fa-crown"></i></div>
+                    <div class="plan-name">Plan Prestige</div>
+                    <div class="plan-duration">5 ans</div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> Couverture 5 ans complète</li>
+                        <li><i class="fas fa-check"></i> Support VIP 24/7</li>
+                        <li><i class="fas fa-check"></i> Remplacement express gratuit</li>
+                        <li><i class="fas fa-check"></i> Retour 90 jours gratuit</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h2>Achetez avec Confiance</h2>
+            <p>Tous nos produits sont couverts par notre garantie de qualité complète</p>
+            <a href="catalog.html" class="btn">
+                <i class="fas fa-shopping-bag"></i> Découvrir Nos Produits
+            </a>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 PHENIX-TECH-SERVICES – Tous droits réservés</p>
+    </footer>
+</body>
+</html>

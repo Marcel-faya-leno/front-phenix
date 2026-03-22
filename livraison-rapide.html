@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Livraison Rapide | PHENIX TECH-SERVICES</title>
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <script src="config.js"></script>
+    <script src="theme.js"></script>
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    <style>
+        :root {
+            --primary: #2A5CAA;
+            --secondary: #FF6B35;
+            --dark: #0A0F1A;
+            --darker: #050811;
+            --card-bg: #111827;
+            --text: #F0F4F8;
+            --text-muted: #94A3B8;
+            --gray: #1E293B;
+            --warning: #F59E0B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        .bg-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: radial-gradient(circle at 20% 80%, rgba(42, 92, 170, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 107, 53, 0.08) 0%, transparent 50%);
+        }
+
+        header {
+            background: rgba(5, 8, 17, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--gray);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .logo-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .logo-text .brand-name {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            background: rgba(255, 255, 255, 0.09);
+            color: var(--text);
+        }
+
+        .nav-btn:hover {
+            background: rgba(42, 92, 170, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .hero {
+            padding: 80px 30px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 900;
+        }
+
+        .hero p {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 18px;
+            color: var(--text-muted);
+        }
+
+        .content {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            color: var(--text);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--gray);
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            color: var(--warning);
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: var(--text);
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .pricing-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+            border: 1px solid var(--gray);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 30px;
+        }
+
+        .pricing-table th {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .pricing-table td {
+            padding: 20px;
+            border-bottom: 1px solid var(--gray);
+            color: var(--text-muted);
+        }
+
+        .pricing-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .pricing-table tr:hover {
+            background: rgba(42, 92, 170, 0.1);
+        }
+
+        .delivery-badge {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary) 0%, #1E447F 100%);
+            border-radius: 16px;
+            padding: 50px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .cta-section h2 {
+            font-size: 32px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 30px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        footer {
+            background: rgba(5, 8, 17, 0.95);
+            border-top: 1px solid var(--gray);
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .hero {
+                padding: 40px 20px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-table {
+                font-size: 14px;
+            }
+
+            .pricing-table th,
+            .pricing-table td {
+                padding: 15px;
+            }
+
+            .content {
+                padding: 0 15px;
+            }
+
+            .cta-section {
+                padding: 30px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 10px 12px;
+            }
+
+            .logo-img {
+                width: 40px;
+                height: 40px;
+            }
+
+            .hero {
+                padding: 30px 15px;
+            }
+
+            .hero h1 {
+                font-size: 24px;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            .pricing-table {
+                font-size: 12px;
+            }
+
+            .pricing-table th,
+            .pricing-table td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-effects"></div>
+
+    <header>
+        <a href="index.html" class="logo-container">
+            <img src="images/logo.jpg" alt="PHENIX Logo" class="logo-img">
+            <div class="logo-text">
+                <div class="brand-name">PHENIX</div>
+            </div>
+        </a>
+        <div>
+            <a href="index.html" class="nav-btn">
+                <i class="fas fa-home"></i> Accueil
+            </a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1><i class="fas fa-shipping-fast"></i> Livraison Rapide</h1>
+        <p>Recevez vos composants électroniques rapidement et en toute sécurité</p>
+    </section>
+
+    <div class="content">
+        <div class="section">
+            <h2 class="section-title">Nos Services de Livraison</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                    <h3>Livraison Express</h3>
+                    <p>Livraison en 24-48h pour les commandes passées avant midi.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-map-marked-alt"></i></div>
+                    <h3>Suivi en Temps Réel</h3>
+                    <p>Suivez votre colis en direct avec numéro de suivi unique.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>Emballage Sécurisé</h3>
+                    <p>Emballage professionnel pour protéger vos composants.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-check-circle"></i></div>
+                    <h3>Signature Requise</h3>
+                    <p>Livraison avec signature pour garantir la réception.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-redo"></i></div>
+                    <h3>Retour Gratuit</h3>
+                    <p>Retour sans frais en cas de défaut ou insatisfaction.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-headset"></i></div>
+                    <h3>Support Livraison</h3>
+                    <p>Équipe disponible pour répondre à vos questions.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Options de Livraison</h2>
+            <table class="pricing-table">
+                <thead>
+                    <tr>
+                        <th>Option de Livraison</th>
+                        <th>Délai</th>
+                        <th>Coût</th>
+                        <th>Suivi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Express 24h</strong></td>
+                        <td><span class="delivery-badge">24h</span></td>
+                        <td>5 000 GNF</td>
+                        <td><i class="fas fa-check" style="color: var(--primary);"></i></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rapide 48h</strong></td>
+                        <td><span class="delivery-badge">48h</span></td>
+                        <td>3 000 GNF</td>
+                        <td><i class="fas fa-check" style="color: var(--primary);"></i></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Standard 3-5j</strong></td>
+                        <td><span class="delivery-badge">3-5 jours</span></td>
+                        <td>2 000 GNF</td>
+                        <td><i class="fas fa-check" style="color: var(--primary);"></i></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Économique 5-7j</strong></td>
+                        <td><span class="delivery-badge">5-7 jours</span></td>
+                        <td>Gratuit</td>
+                        <td><i class="fas fa-check" style="color: var(--primary);"></i></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="cta-section">
+            <h2>Commandez Maintenant</h2>
+            <p>Choisissez votre option de livraison et recevez vos composants rapidement</p>
+            <a href="catalog.html" class="btn">
+                <i class="fas fa-shopping-bag"></i> Voir le Catalogue
+            </a>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 PHENIX-TECH-SERVICES – Tous droits réservés</p>
+    </footer>
+</body>
+</html>
