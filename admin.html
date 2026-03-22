@@ -670,6 +670,25 @@
             line-height: 1.5;
         }
 
+        /* ========== FIX MOBILE TRANSFORMATIONS ========== */
+        @media (max-width: 768px) {
+            /* Désactiver les transformations problématiques au clic sur mobile */
+            button, a, .nav-item, .action-card, [onclick] {
+                -webkit-tap-highlight-color: transparent;
+                touch-action: manipulation;
+            }
+
+            /* Réinitialiser les transformations après clic */
+            button:active, a:active, .nav-item:active {
+                transform: none !important;
+            }
+
+            /* Empêcher les états :focus de persister */
+            button:focus, a:focus, input:focus {
+                outline: none;
+            }
+        }
+
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
